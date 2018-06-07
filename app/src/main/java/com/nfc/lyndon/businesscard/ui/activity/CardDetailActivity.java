@@ -6,13 +6,13 @@ import com.nfc.lyndon.businesscard.R;
 import com.nfc.lyndon.businesscard.base.BaseActivity;
 
 /**
- * 主页面
+ * 名片详情
  */
-public class MainActivity extends BaseActivity {
+public class CardDetailActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_card_detail);
     }
 }

@@ -11,7 +11,7 @@ public class UserEntity {
     @Id
     private String userId;
 
-    @Property (nameInDb = "username")
+    @Property (nameInDb = "USERNAME")
     private String username;
 
     @Generated(hash = 1849802058)

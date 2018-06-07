@@ -25,7 +25,7 @@ public class UserEntityDao extends AbstractDao<UserEntity, String> {
      */
     public static class Properties {
         public final static Property UserId = new Property(0, String.class, "userId", true, "USER_ID");
-        public final static Property Username = new Property(1, String.class, "username", false, "username");
+        public final static Property Username = new Property(1, String.class, "username", false, "USERNAME");
     }
 
 
@@ -42,7 +42,7 @@ public class UserEntityDao extends AbstractDao<UserEntity, String> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"USER_ENTITY\" (" + //
                 "\"USER_ID\" TEXT PRIMARY KEY NOT NULL ," + // 0: userId
-                "\"username\" TEXT);"); // 1: username
+                "\"USERNAME\" TEXT);"); // 1: username
     }
 
     /** Drops the underlying database table. */

@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.nfc.lyndon.businesscard">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
@@ -14,15 +14,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!-- 7.0+配置-->
+        <!-- 7.0+配置 -->
         <provider
-            android:authorities="com.nfc.lyndon.businesscard.fileprovider"
             android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.nfc.lyndon.businesscard.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"/>
+                android:resource="@xml/file_paths" />
         </provider>
 
         <activity android:name=".ui.activity.MainActivity">
@@ -32,6 +32,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.activity.SplashActivity" />
+        <activity android:name=".ui.activity.CreateCardActivity" />
+        <activity android:name=".ui.activity.CardDetailActivity" />
+        <activity android:name=".ui.activity.CardListActivity" />
+        <activity android:name=".ui.activity.SendCardActivity" />
+        <activity android:name=".ui.activity.TransCardActivity" />
+        <activity android:name=".ui.activity.ResultActivity"></activity>
     </application>
 
 </manifest>

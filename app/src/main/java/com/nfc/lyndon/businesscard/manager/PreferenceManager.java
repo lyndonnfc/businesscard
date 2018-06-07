@@ -17,7 +17,7 @@ public class PreferenceManager {
 
     private PreferenceManager(){
         sharedPreferences = BCApplication.getInstance()
-                .getSharedPreferences("mb_car", Context.MODE_PRIVATE);
+                .getSharedPreferences("business", Context.MODE_PRIVATE);
     }
 
     public static synchronized PreferenceManager getInstance() {
