@@ -2,10 +2,13 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#00a2e9</color>
 
     <color name="white">#fefefe</color>
     <color name="buuton_white">#fcfcfc</color>
     <color name="bg_white">#f7f7f7</color>
     <color name="light_green">#ecf7fb</color>
+    <color name="blue">#00a2e9</color>
+    <color name="text_color_333">#333333</color>
+    <color name="line_color">#dddddd</color>
 </resources>

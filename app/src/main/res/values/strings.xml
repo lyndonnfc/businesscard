@@ -1,3 +1,32 @@
 <resources>
     <string name="app_name">BusinessCard</string>
+    <string name="image_nfc">nfc</string>
+    <string name="this_is_your_card">这是你的电子名片</string>
+    <string name="hint_search">姓名/手机号/公司名称</string>
+    <string name="take_photo_add_card">拍照添加名片</string>
+    <string name="add_card_use_camera">拍摄名片</string>
+    <string name="use_camera_desc">·拍照完成,进行识别操作,返回识别结果,然后跳转到结果页·</string>
+    <string name="input_add_card">输入添加名片</string>
+    <string name="add_card_use_hand">手动输入名片</string>
+    <string name="use_hand_desc">·点击跳转到名片编辑页·</string>
+    <string name="background">background</string>
+    <string name="card_list">名片列表</string>
+    <string name="card_send">递名片</string>
+    <string name="avatar">头像</string>
+    <string name="send_card_use_nfc">NFC递名片</string>
+    <string name="share_card">分享名片</string>
+    <string name="edit_card">编辑名片</string>
+    <string name="create_card">创建个人名片</string>
+    <string name="create_card_desc">马上创建自己的名片,寻找合适的人脉</string>
+    <string name="line">分割线</string>
+    <string name="blue_line">提示线</string>
+    <string name="company">公司</string>
+    <string name="mobile">电话</string>
+    <string name="phone">电话</string>
+    <string name="fax">传真</string>
+    <string name="email">邮箱</string>
+    <string name="address">地址</string>
+    <string name="share">分享</string>
+    <string name="edit">编辑</string>
+    <string name="delete">删除</string>
 </resources>

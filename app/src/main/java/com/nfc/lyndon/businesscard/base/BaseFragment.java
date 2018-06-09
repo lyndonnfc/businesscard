@@ -2,85 +2,55 @@ package com.nfc.lyndon.businesscard.base;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public abstract class BaseFragment extends Fragment{
-
+public abstract class BaseFragment<V,P extends BasePresent<V>> extends Fragment {
+    protected P mPresenter;
     protected Context mContext;
-    protected String fragmentTitle;             //fragment标题
-    private boolean isVisible;                  //是否可见状态
-    private boolean isPrepared;                 //标志位，View已经初始化完成。
-    private boolean isFirstLoad = true;         //是否第一次加载
-    protected LayoutInflater inflater;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
         mContext = getActivity();
-        this.inflater = inflater;
-        isFirstLoad = true;
-        View view = initView(inflater, container, savedInstanceState);
-        isPrepared = true;
-        lazyLoad();
-        return view;
+        mPresenter = initPresenter();//创建presenter
+        mPresenter.attach((V) this);
     }
 
-    /** 如果是与ViewPager一起使用，调用的是setUserVisibleHint */
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (getUserVisibleHint()) {
-            isVisible = true;
-            onVisible();
-        } else {
-            isVisible = false;
-            onInvisible();
-        }
+    public void onDetach() {
+        super.onDetach();
+        mPresenter.detach();
     }
 
-    /**
-     * 如果是通过FragmentTransaction的show和hide的方法来控制显示，调用的是onHiddenChanged.
-     * 若是初始就show的Fragment 为了触发该事件 需要先hide再show
-     */
+    @Nullable
     @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (!hidden) {
-            isVisible = true;
-            onVisible();
-        } else {
-            isVisible = false;
-            onInvisible();
-        }
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(getContentId(),container,false);
     }
 
-    protected void onVisible() {
-        lazyLoad();
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadData();
     }
 
-    protected void onInvisible() {
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPresenter.detach();
     }
 
-    protected void lazyLoad() {
-        if (!isPrepared || !isVisible || !isFirstLoad) {
-            return;
-        }
-        isFirstLoad = false;
-        initData();
-    }
-
-    protected abstract View initView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
-
-    protected abstract void initData();
-
-    public String getTitle() {
-        return TextUtils.isEmpty(fragmentTitle) ? "" : fragmentTitle;
-    }
-
-    public void setTitle(String title) {
-        fragmentTitle = title;
-    }
+    protected abstract int getContentId();
+    protected abstract void loadData();
+    protected abstract P initPresenter();
 }
