@@ -246,6 +246,39 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_trans_nfc"
             app:layout_constraintTop_toBottomOf="@id/tv_edit" />
+
+        <ImageView
+            android:layout_width="2dp"
+            android:layout_height="30dp"
+            android:background="@color/blue"
+            app:layout_constraintStart_toStartOf="@id/tv_share"
+            app:layout_constraintTop_toTopOf="@id/tv_share"
+            app:layout_constraintBottom_toBottomOf="@id/tv_share"/>
+
+        <ImageView
+            android:layout_width="2dp"
+            android:layout_height="30dp"
+            android:background="@color/blue"
+            app:layout_constraintStart_toStartOf="@id/tv_trans_nfc"
+            app:layout_constraintTop_toTopOf="@id/tv_trans_nfc"
+            app:layout_constraintBottom_toBottomOf="@id/tv_trans_nfc"/>
+
+        <ImageView
+            android:layout_width="2dp"
+            android:layout_height="30dp"
+            android:background="@color/blue"
+            app:layout_constraintEnd_toEndOf="@id/tv_edit"
+            app:layout_constraintTop_toTopOf="@id/tv_edit"
+            app:layout_constraintBottom_toBottomOf="@id/tv_edit"/>
+
+        <ImageView
+            android:layout_width="2dp"
+            android:layout_height="30dp"
+            android:background="@color/blue"
+            app:layout_constraintEnd_toEndOf="@id/tv_delete"
+            app:layout_constraintTop_toTopOf="@id/tv_delete"
+            app:layout_constraintBottom_toBottomOf="@id/tv_delete"/>
+
     </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>
