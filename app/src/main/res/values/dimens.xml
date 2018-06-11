@@ -6,4 +6,7 @@
     <dimen name="sp_20">20sp</dimen>
     <dimen name="dp_45">45dp</dimen>
     <dimen name="dp_43">43dp</dimen>
+    <dimen name="dp_38">38dp</dimen>
+    <dimen name="dp_18">18dp</dimen>
+    <dimen name="dp_26">26dp</dimen>
 </resources>

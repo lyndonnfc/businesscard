@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     android:background="@drawable/bg_welcome"
     tools:context=".ui.activity.ResultActivity">
 
@@ -223,16 +224,16 @@
 
         </android.support.constraint.ConstraintLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
             android:layout_marginTop="15dp"
             android:background="@color/bg_white"
-            android:paddingHorizontal="@dimen/dp_38"
-            android:paddingBottom="@dimen/dp_26"
-            android:orientation="vertical">
-            
+            android:paddingHorizontal="@dimen/dp_38">
+
             <Button
+                android:id="@+id/btn_save"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_43"
                 android:background="@drawable/bg_edit"
@@ -243,18 +244,18 @@
                 android:textColor="@color/blue"/>
 
             <Button
+                android:id="@+id/btn_cancel"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_43"
+                android:layout_below="@id/btn_save"
                 android:background="@drawable/bg_edit"
                 android:layout_marginTop="@dimen/dp_18"
                 android:gravity="center"
                 android:text="@string/cancel"
                 android:textSize="@dimen/sp_16"
                 android:textColor="@color/blue"/>
-            
-        </LinearLayout>
 
-
+        </RelativeLayout>
     </LinearLayout>
 
 </ScrollView>
