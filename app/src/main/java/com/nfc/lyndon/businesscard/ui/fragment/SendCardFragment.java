@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.nfc.lyndon.businesscard.R;
 import com.nfc.lyndon.businesscard.base.BaseFragment;
-import com.nfc.lyndon.businesscard.base.BasePresent;
 import com.nfc.lyndon.businesscard.present.SendCardPresent;
 import com.nfc.lyndon.businesscard.view.SendCardView;
 
@@ -55,7 +54,7 @@ public class SendCardFragment extends BaseFragment<SendCardView, SendCardPresent
 
     @Override
     public SendCardPresent initPresenter() {
-        return new SendCardPresent();
+        return new SendCardPresent(mContext);
     }
 
     @Override
@@ -91,10 +90,12 @@ public class SendCardFragment extends BaseFragment<SendCardView, SendCardPresent
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_trans_nfc:
+                mPresenter.toTransfer();
                 break;
             case R.id.tv_share:
                 break;
             case R.id.tv_edit:
+                mPresenter.toEdit();
                 break;
             case R.id.lay_create:
                 break;

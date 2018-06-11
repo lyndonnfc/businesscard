@@ -67,6 +67,7 @@ public class CardDetailActivity extends MvpActivity<DetailView, DetailPresent> {
                 presenter.toEdit();
                 break;
             case R.id.tv_trans_nfc:
+                presenter.toTransfer();
                 break;
             case R.id.tv_delete:
                 break;

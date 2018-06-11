@@ -4,60 +4,54 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
     android:background="@drawable/bg_welcome"
+    android:fillViewport="true"
     tools:context=".ui.activity.ResultActivity">
 
     <LinearLayout
-        android:layout_marginTop="33dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginHorizontal="@dimen/dp_38">
-
-            <ImageView
-                android:id="@+id/iv_font"
-                android:layout_width="0dp"
-                android:layout_height="76dp"
-                android:layout_weight="1"
-                android:scaleType="centerCrop"
-                android:src="@drawable/img_card"
-                android:contentDescription="@string/font_card"/>
-
-            <ImageView
-                android:id="@+id/iv_back"
-                android:layout_width="0dp"
-                android:layout_height="76dp"
-                android:layout_marginStart="4dp"
-                android:layout_weight="1"
-                android:scaleType="centerCrop"
-                android:src="@drawable/img_card"
-                android:contentDescription="@string/back_card"/>
-        </LinearLayout>
-
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
-            android:layout_marginHorizontal="@dimen/dp_38">
+            android:layout_marginHorizontal="@dimen/dp_38"
+            android:layout_marginTop="33dp">
+
+            <ImageView
+                android:id="@+id/iv_font"
+                android:layout_width="140dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center_horizontal"
+                android:contentDescription="@string/avatar"
+                android:scaleType="centerCrop"
+                android:src="@drawable/img_avatar_bg"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_camera"
+                app:layout_constraintEnd_toEndOf="@id/iv_font"
+                app:layout_constraintStart_toStartOf="@id/iv_font"
+                app:layout_constraintBottom_toBottomOf="@id/iv_font"
+                app:layout_constraintTop_toTopOf="@id/iv_font"/>
 
             <EditText
                 android:id="@+id/et_name"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_43"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/bg_edit"
                 android:drawableEnd="@drawable/icon_compile"
                 android:paddingEnd="12dp"
                 android:paddingStart="@dimen/dp_72"
-                android:inputType="text"
                 android:textColor="@color/text_color_333"
-                android:textSize="@dimen/sp_14" />
+                android:textSize="@dimen/sp_14"
+                app:layout_constraintTop_toBottomOf="@id/iv_font"/>
 
             <EditText
                 android:id="@+id/et_company"
@@ -68,7 +62,6 @@
                 android:drawableEnd="@drawable/icon_compile"
                 android:paddingEnd="12dp"
                 android:paddingStart="@dimen/dp_72"
-                android:inputType="text"
                 android:textColor="@color/text_color_333"
                 android:textSize="@dimen/sp_14"
                 app:layout_constraintTop_toBottomOf="@id/et_name" />
@@ -83,7 +76,6 @@
                 android:drawableEnd="@drawable/icon_compile"
                 android:paddingEnd="12dp"
                 android:paddingStart="@dimen/dp_72"
-                android:inputType="text"
                 android:textColor="@color/text_color_333"
                 android:textSize="@dimen/sp_14"
                 app:layout_constraintTop_toBottomOf="@id/et_company" />
@@ -95,9 +87,9 @@
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_edit"
                 android:drawableEnd="@drawable/icon_compile"
+                android:inputType="phone"
                 android:paddingEnd="12dp"
                 android:paddingStart="@dimen/dp_72"
-                android:inputType="phone"
                 android:textColor="@color/text_color_333"
                 android:textSize="@dimen/sp_14"
                 app:layout_constraintTop_toBottomOf="@id/et_position" />
@@ -110,9 +102,9 @@
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_edit"
                 android:drawableEnd="@drawable/icon_compile"
+                android:inputType="phone"
                 android:paddingEnd="12dp"
                 android:paddingStart="@dimen/dp_72"
-                android:inputType="phone"
                 android:textColor="@color/text_color_333"
                 android:textSize="@dimen/sp_14"
                 app:layout_constraintTop_toBottomOf="@id/et_mobile" />
@@ -124,9 +116,9 @@
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_edit"
                 android:drawableEnd="@drawable/icon_compile"
+                android:inputType="textEmailAddress"
                 android:paddingEnd="12dp"
                 android:paddingStart="@dimen/dp_72"
-                android:inputType="textEmailAddress"
                 android:textColor="@color/text_color_333"
                 android:textSize="@dimen/sp_14"
                 app:layout_constraintTop_toBottomOf="@id/et_fax" />
@@ -140,7 +132,6 @@
                 android:drawableEnd="@drawable/icon_compile"
                 android:paddingEnd="12dp"
                 android:paddingStart="@dimen/dp_72"
-                android:inputType="text"
                 android:textColor="@color/text_color_333"
                 android:textSize="@dimen/sp_14"
                 app:layout_constraintTop_toBottomOf="@id/et_email" />
@@ -236,24 +227,24 @@
                 android:id="@+id/btn_save"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_43"
-                android:background="@drawable/bg_edit"
                 android:layout_marginTop="@dimen/dp_18"
+                android:background="@drawable/bg_edit"
                 android:gravity="center"
                 android:text="@string/save"
-                android:textSize="@dimen/sp_16"
-                android:textColor="@color/blue"/>
+                android:textColor="@color/blue"
+                android:textSize="@dimen/sp_16" />
 
             <Button
                 android:id="@+id/btn_cancel"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_43"
                 android:layout_below="@id/btn_save"
-                android:background="@drawable/bg_edit"
                 android:layout_marginTop="@dimen/dp_18"
+                android:background="@drawable/bg_edit"
                 android:gravity="center"
                 android:text="@string/cancel"
-                android:textSize="@dimen/sp_16"
-                android:textColor="@color/blue"/>
+                android:textColor="@color/blue"
+                android:textSize="@dimen/sp_16" />
 
         </RelativeLayout>
     </LinearLayout>
