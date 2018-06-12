@@ -4,4 +4,6 @@ import com.nfc.lyndon.businesscard.base.BaseView;
 
 public interface EditView extends BaseView{
 
+    void initView();
+
 }

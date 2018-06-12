@@ -3,6 +3,7 @@ package com.nfc.lyndon.businesscard.util;
 import android.annotation.SuppressLint;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,9 +14,12 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.view.View;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -139,7 +143,8 @@ public class BitmapUtils {
     }
 
     /**
-     *  质量压缩
+     * 质量压缩
+     *
      * @param image
      * @return
      */
@@ -160,6 +165,7 @@ public class BitmapUtils {
 
     /**
      * 根据Uri获取图片绝对路径，解决Android4.4以上版本Uri转换
+     *
      * @param context
      * @param imageUri
      * @author yaoxing
@@ -193,7 +199,7 @@ public class BitmapUtils {
                     contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
                 }
                 String selection = MediaStore.Images.Media._ID + "=?";
-                String[] selectionArgs = new String[] { split[1] };
+                String[] selectionArgs = new String[]{split[1]};
                 return getDataColumn(context, contentUri, selection, selectionArgs);
             }
         } // MediaStore (and general)
@@ -213,7 +219,7 @@ public class BitmapUtils {
     private static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
         Cursor cursor = null;
         String column = MediaStore.Images.Media.DATA;
-        String[] projection = { column };
+        String[] projection = {column};
         try {
             cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
             if (cursor != null && cursor.moveToFirst()) {
@@ -344,5 +350,63 @@ public class BitmapUtils {
     public static Bitmap base64ToBitmap(String base64Data) {
         byte[] bytes = Base64.decode(base64Data, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+    }
+
+    /**
+     * 获取当前view截图
+     *
+     * @param v
+     * @return
+     */
+    public static Uri getUri(View v, Context context) {
+        if (null == v) {
+            return null;
+        }
+        v.setDrawingCacheEnabled(true);
+        v.buildDrawingCache();
+        v.measure(View.MeasureSpec.makeMeasureSpec(v.getWidth(), View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(v.getHeight(), View.MeasureSpec.EXACTLY));
+
+        Bitmap b = Bitmap.createBitmap(v.getDrawingCache(), 0, 0, v.getMeasuredWidth(), v.getMeasuredHeight());
+
+        v.setDrawingCacheEnabled(false);
+        v.destroyDrawingCache();
+
+        return saveImageToGallery(context, b);
+    }
+
+    /**
+     * 保存图片到本地
+     * @param context
+     * @param bmp
+     */
+    public static Uri saveImageToGallery(Context context, Bitmap bmp) {
+        // 首先保存图片
+        File appDir = new File(context.getFilesDir().getPath());
+        String fileName = "business.jpg";
+        File file = new File(appDir, fileName);
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // 其次把文件插入到系统图库
+        Uri uri = null;
+        try {
+            String imageUri = MediaStore.Images.Media.insertImage(context.getContentResolver(),
+                    file.getAbsolutePath(), fileName, null);
+            uri =  Uri.parse(imageUri);
+            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        // 最后通知图库更新
+        return uri;
     }
 }
