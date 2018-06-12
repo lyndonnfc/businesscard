@@ -1,19 +1,13 @@
-package com.nfc.lyndon.businesscard.present;
+package com.nfc.lyndon.businesscard.presenter;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.view.View;
 
-import com.nfc.lyndon.businesscard.base.BasePresent;
+import com.nfc.lyndon.businesscard.contract.DetailContract;
 import com.nfc.lyndon.businesscard.ui.activity.EditActivity;
 import com.nfc.lyndon.businesscard.ui.activity.TransferActivity;
-import com.nfc.lyndon.businesscard.util.BitmapUtils;
-import com.nfc.lyndon.businesscard.view.DetailView;
 
-import permissions.dispatcher.NeedsPermission;
-
-public class DetailPresent extends BasePresent<DetailView>{
+public class DetailPresent extends DetailContract.DetailPresenter{
 
     private Context mContext;
 

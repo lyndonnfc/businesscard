@@ -1,6 +1,5 @@
-package com.nfc.lyndon.businesscard.present;
+package com.nfc.lyndon.businesscard.presenter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,17 +7,16 @@ import android.widget.LinearLayout;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.nfc.lyndon.businesscard.R;
-import com.nfc.lyndon.businesscard.base.BasePresent;
+import com.nfc.lyndon.businesscard.contract.CardListContract;
 import com.nfc.lyndon.businesscard.model.UserModel;
 import com.nfc.lyndon.businesscard.ui.activity.CardDetailActivity;
 import com.nfc.lyndon.businesscard.ui.adapter.CardAdapter;
 import com.nfc.lyndon.businesscard.util.ScreenUtils;
-import com.nfc.lyndon.businesscard.view.CardListView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CardListPresent extends BasePresent<CardListView>{
+public class CardListPresent extends CardListContract.CardListPresenter{
 
     public CardAdapter mAdapter;
 

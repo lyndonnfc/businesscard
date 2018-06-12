@@ -1,16 +1,14 @@
-package com.nfc.lyndon.businesscard.present;
+package com.nfc.lyndon.businesscard.presenter;
 
 import android.content.Context;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.nfc.lyndon.businesscard.R;
-import com.nfc.lyndon.businesscard.base.BasePresent;
-import com.nfc.lyndon.businesscard.view.EditView;
+import com.nfc.lyndon.businesscard.contract.EditContract;
 
-public class EditPresent extends BasePresent<EditView> {
+public class EditPresent extends EditContract.EditPresenter {
 
     private Context mContext;
 

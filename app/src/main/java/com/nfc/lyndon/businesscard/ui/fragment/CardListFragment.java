@@ -1,7 +1,6 @@
 package com.nfc.lyndon.businesscard.ui.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,21 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.nfc.lyndon.businesscard.R;
 import com.nfc.lyndon.businesscard.base.BaseFragment;
-import com.nfc.lyndon.businesscard.base.BasePresent;
 import com.nfc.lyndon.businesscard.model.UserModel;
-import com.nfc.lyndon.businesscard.present.CardListPresent;
-import com.nfc.lyndon.businesscard.ui.activity.CardDetailActivity;
-import com.nfc.lyndon.businesscard.ui.adapter.CardAdapter;
-import com.nfc.lyndon.businesscard.util.ScreenUtils;
-import com.nfc.lyndon.businesscard.view.CardListView;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.nfc.lyndon.businesscard.presenter.CardListPresent;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,9 +22,9 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
- * 名片列表15623294927 0110062361
+ * 名片列表
  */
-public class CardListFragment extends BaseFragment<CardListView, CardListPresent> implements BaseQuickAdapter.OnItemClickListener{
+public class CardListFragment extends BaseFragment<CardListPresent, UserModel> implements BaseQuickAdapter.OnItemClickListener{
 
     @BindView(R.id.et_search)
     EditText etSearch;
@@ -51,11 +41,6 @@ public class CardListFragment extends BaseFragment<CardListView, CardListPresent
     Unbinder unbinder;
 
     @Override
-    public CardListPresent initPresenter() {
-        return new CardListPresent(mContext);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         unbinder = ButterKnife.bind(this, rootView);
@@ -63,11 +48,13 @@ public class CardListFragment extends BaseFragment<CardListView, CardListPresent
         layAddCard.setVisibility(View.GONE);
         rvList.setVisibility(View.VISIBLE);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         rvList.setLayoutManager(linearLayoutManager);
         mPresenter.initAdapter();
         mPresenter.mAdapter.setOnItemClickListener(this);
         rvList.setAdapter(mPresenter.mAdapter);
+
+        mPresenter.update();
         return rootView;
     }
 
@@ -77,8 +64,13 @@ public class CardListFragment extends BaseFragment<CardListView, CardListPresent
     }
 
     @Override
-    protected void loadData() {
-        mPresenter.update();
+    protected CardListPresent initPresenter() {
+        return new CardListPresent(mContext);
+    }
+
+    @Override
+    protected UserModel initModel() {
+        return new UserModel();
     }
 
     @Override

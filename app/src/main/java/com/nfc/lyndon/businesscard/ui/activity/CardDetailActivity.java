@@ -11,9 +11,9 @@ import android.widget.TextView;
 
 import com.nfc.lyndon.businesscard.R;
 import com.nfc.lyndon.businesscard.base.MvpActivity;
-import com.nfc.lyndon.businesscard.present.DetailPresent;
+import com.nfc.lyndon.businesscard.model.DetailModel;
+import com.nfc.lyndon.businesscard.presenter.DetailPresent;
 import com.nfc.lyndon.businesscard.util.BitmapUtils;
-import com.nfc.lyndon.businesscard.view.DetailView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,7 +25,7 @@ import permissions.dispatcher.RuntimePermissions;
  * 名片详情
  */
 @RuntimePermissions
-public class CardDetailActivity extends MvpActivity<DetailView, DetailPresent> {
+public class CardDetailActivity extends MvpActivity<DetailPresent, DetailModel> {
 
     @BindView(R.id.tv_name)
     TextView tvName;
@@ -57,13 +57,27 @@ public class CardDetailActivity extends MvpActivity<DetailView, DetailPresent> {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_card_detail);
         ButterKnife.bind(this);
     }
 
     @Override
-    public DetailPresent initPresenter() {
+    public void initView() {
+
+    }
+
+    @Override
+    public int getLayoutResId() {
+        return R.layout.activity_card_detail;
+    }
+
+    @Override
+    protected DetailPresent initPresenter() {
         return new DetailPresent(mContext);
+    }
+
+    @Override
+    protected DetailModel initModel() {
+        return new DetailModel();
     }
 
     @OnClick({R.id.tv_share, R.id.tv_edit, R.id.tv_trans_nfc, R.id.tv_delete})
@@ -73,10 +87,10 @@ public class CardDetailActivity extends MvpActivity<DetailView, DetailPresent> {
                 CardDetailActivityPermissionsDispatcher.shareWithPermissionCheck(this, layTop);
                 break;
             case R.id.tv_edit:
-                presenter.toEdit();
+                mPresenter.toEdit();
                 break;
             case R.id.tv_trans_nfc:
-                presenter.toTransfer();
+                mPresenter.toTransfer();
                 break;
             case R.id.tv_delete:
                 break;
@@ -88,7 +102,7 @@ public class CardDetailActivity extends MvpActivity<DetailView, DetailPresent> {
         Intent imageIntent = new Intent(Intent.ACTION_SEND);
         imageIntent.setType("image/jpeg");
         imageIntent.putExtra(Intent.EXTRA_STREAM,
-                BitmapUtils.getUri(v, mContext));
-        mContext.startActivity(Intent.createChooser(imageIntent, "分享"));
+                BitmapUtils.getUri(v, this));
+        startActivity(Intent.createChooser(imageIntent, "分享"));
     }
 }

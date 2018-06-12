@@ -5,12 +5,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.nfc.lyndon.businesscard.R;
 import com.nfc.lyndon.businesscard.base.MvpActivity;
-import com.nfc.lyndon.businesscard.present.EditPresent;
-import com.nfc.lyndon.businesscard.view.EditView;
+import com.nfc.lyndon.businesscard.model.EditModel;
+import com.nfc.lyndon.businesscard.presenter.EditPresent;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -19,7 +17,7 @@ import butterknife.OnClick;
 /**
  * 编辑页面
  */
-public class EditActivity extends MvpActivity<EditView, EditPresent> {
+public class EditActivity extends MvpActivity<EditPresent, EditModel> {
 
     @BindView(R.id.iv_font)
     ImageView ivFont;
@@ -41,14 +39,28 @@ public class EditActivity extends MvpActivity<EditView, EditPresent> {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit);
         ButterKnife.bind(this);
-        presenter.initView(ivFont);
+        mPresenter.initView(ivFont);
     }
 
     @Override
-    public EditPresent initPresenter() {
+    public void initView() {
+
+    }
+
+    @Override
+    public int getLayoutResId() {
+        return R.layout.activity_edit;
+    }
+
+    @Override
+    protected EditPresent initPresenter() {
         return new EditPresent(mContext);
+    }
+
+    @Override
+    protected EditModel initModel() {
+        return new EditModel();
     }
 
     @OnClick({R.id.iv_font, R.id.btn_save, R.id.btn_cancel})

@@ -4,13 +4,16 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public abstract class BaseFragment<V,P extends BasePresent<V>> extends Fragment {
-    protected P mPresenter;
+public abstract class BaseFragment<T extends BasePresenter, M extends BaseModel> extends Fragment {
+
+    public T mPresenter;
+
+    public M mModel;
+
     protected Context mContext;
 
     @Override
@@ -21,15 +24,19 @@ public abstract class BaseFragment<V,P extends BasePresent<V>> extends Fragment 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mContext = getActivity();
-        mPresenter = initPresenter();//创建presenter
-        mPresenter.attach((V) this);
+        mContext = context;
+        //内部获取第一个类型参数的真实类型  ，反射new出对象
+        mPresenter = initPresenter();
+        //内部获取第二个类型参数的真实类型  ，反射new出对象
+        mModel = initModel();
+        //使得P层绑定M层和V层，持有M和V的引用
+        mPresenter.attachModelView(mModel, this);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mPresenter.detach();
+        mPresenter.onDetach();
     }
 
     @Nullable
@@ -41,16 +48,17 @@ public abstract class BaseFragment<V,P extends BasePresent<V>> extends Fragment 
     @Override
     public void onResume() {
         super.onResume();
-        loadData();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mPresenter.detach();
+        mPresenter.onDetach();
     }
 
     protected abstract int getContentId();
-    protected abstract void loadData();
-    protected abstract P initPresenter();
+
+    protected abstract T initPresenter();
+
+    protected abstract M initModel();
 }

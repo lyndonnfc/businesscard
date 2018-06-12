@@ -1,16 +1,17 @@
-package com.nfc.lyndon.businesscard.present;
+package com.nfc.lyndon.businesscard.presenter;
 
+import android.app.Activity;
+import android.content.Context;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.nfc.lyndon.businesscard.R;
-import com.nfc.lyndon.businesscard.base.BasePresent;
+import com.nfc.lyndon.businesscard.contract.MainContract;
 import com.nfc.lyndon.businesscard.ui.fragment.CardListFragment;
 import com.nfc.lyndon.businesscard.ui.fragment.SendCardFragment;
-import com.nfc.lyndon.businesscard.view.MainView;
 
-public class MainPresent extends BasePresent<MainView>{
+public class MainPresent extends MainContract.MainPresenter{
 
     private CardListFragment cardListFragment;
     private SendCardFragment sendCardFragment;
@@ -18,13 +19,10 @@ public class MainPresent extends BasePresent<MainView>{
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
 
-    public MainPresent(FragmentActivity context){
-        fragmentManager = context.getSupportFragmentManager();
-    }
-
-    public void initFragment(){
+    public void initFragment(FragmentActivity context){
         cardListFragment = new CardListFragment();
         sendCardFragment = new SendCardFragment();
+        fragmentManager = context.getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.layout_content, cardListFragment);
         fragmentTransaction.commitAllowingStateLoss();

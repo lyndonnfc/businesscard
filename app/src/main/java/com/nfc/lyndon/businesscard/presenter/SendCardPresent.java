@@ -1,14 +1,13 @@
-package com.nfc.lyndon.businesscard.present;
+package com.nfc.lyndon.businesscard.presenter;
 
 import android.content.Context;
 import android.content.Intent;
 
-import com.nfc.lyndon.businesscard.base.BasePresent;
+import com.nfc.lyndon.businesscard.contract.SendCardContract;
 import com.nfc.lyndon.businesscard.ui.activity.EditActivity;
 import com.nfc.lyndon.businesscard.ui.activity.TransferActivity;
-import com.nfc.lyndon.businesscard.view.SendCardView;
 
-public class SendCardPresent extends BasePresent<SendCardView> {
+public class SendCardPresent extends SendCardContract.SendCardPresenter {
 
     private Context mContext;
 

@@ -1,17 +1,17 @@
 package com.nfc.lyndon.businesscard.model;
 
-import com.nfc.lyndon.businesscard.model.imp.BaseModelImp;
+import com.nfc.lyndon.businesscard.contract.CardListContract;
 
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Property;
-import org.greenrobot.greendao.annotation.Generated;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class UserModel implements BaseModelImp<List<UserModel>>{
+public class UserModel implements CardListContract.CardListModel{
 
     @Id
     private String userId;

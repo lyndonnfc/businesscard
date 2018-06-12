@@ -11,8 +11,8 @@ import android.widget.TextView;
 
 import com.nfc.lyndon.businesscard.R;
 import com.nfc.lyndon.businesscard.base.BaseFragment;
-import com.nfc.lyndon.businesscard.present.SendCardPresent;
-import com.nfc.lyndon.businesscard.view.SendCardView;
+import com.nfc.lyndon.businesscard.model.SendCardModel;
+import com.nfc.lyndon.businesscard.presenter.SendCardPresent;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,7 +22,7 @@ import butterknife.Unbinder;
 /**
  * 递名片页面
  */
-public class SendCardFragment extends BaseFragment<SendCardView, SendCardPresent> {
+public class SendCardFragment extends BaseFragment<SendCardPresent, SendCardModel> {
 
     @BindView(R.id.tv_name)
     TextView tvName;
@@ -53,11 +53,6 @@ public class SendCardFragment extends BaseFragment<SendCardView, SendCardPresent
     Unbinder unbinder;
 
     @Override
-    public SendCardPresent initPresenter() {
-        return new SendCardPresent(mContext);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         unbinder = ButterKnife.bind(this, rootView);
@@ -76,8 +71,13 @@ public class SendCardFragment extends BaseFragment<SendCardView, SendCardPresent
     }
 
     @Override
-    protected void loadData() {
+    protected SendCardPresent initPresenter() {
+        return new SendCardPresent(mContext);
+    }
 
+    @Override
+    protected SendCardModel initModel() {
+        return new SendCardModel();
     }
 
     @Override
