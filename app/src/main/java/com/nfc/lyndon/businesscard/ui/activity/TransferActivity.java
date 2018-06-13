@@ -5,12 +5,12 @@ import android.os.Bundle;
 import com.nfc.lyndon.businesscard.R;
 import com.nfc.lyndon.businesscard.base.MvpActivity;
 import com.nfc.lyndon.businesscard.model.TransferModel;
-import com.nfc.lyndon.businesscard.presenter.TransferPresent;
+import com.nfc.lyndon.businesscard.presenter.TransferPresenter;
 
 /**
  * 正在传输页面
  */
-public class TransferActivity extends MvpActivity<TransferPresent, TransferModel>{
+public class TransferActivity extends MvpActivity<TransferPresenter, TransferModel>{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +28,8 @@ public class TransferActivity extends MvpActivity<TransferPresent, TransferModel
     }
 
     @Override
-    protected TransferPresent initPresenter() {
-        return new TransferPresent();
+    protected TransferPresenter initPresenter() {
+        return new TransferPresenter();
     }
 
     @Override

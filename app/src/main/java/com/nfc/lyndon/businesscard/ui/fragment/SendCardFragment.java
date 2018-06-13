@@ -2,9 +2,7 @@ package com.nfc.lyndon.businesscard.ui.fragment;
 
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -12,17 +10,15 @@ import android.widget.TextView;
 import com.nfc.lyndon.businesscard.R;
 import com.nfc.lyndon.businesscard.base.BaseFragment;
 import com.nfc.lyndon.businesscard.model.SendCardModel;
-import com.nfc.lyndon.businesscard.presenter.SendCardPresent;
+import com.nfc.lyndon.businesscard.presenter.SendCardPresenter;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 
 /**
  * 递名片页面
  */
-public class SendCardFragment extends BaseFragment<SendCardPresent, SendCardModel> {
+public class SendCardFragment extends BaseFragment<SendCardPresenter, SendCardModel> {
 
     @BindView(R.id.tv_name)
     TextView tvName;
@@ -50,20 +46,6 @@ public class SendCardFragment extends BaseFragment<SendCardPresent, SendCardMode
     RelativeLayout layCreate;
     @BindView(R.id.tv_create_desc)
     TextView tvCreateDesc;
-    Unbinder unbinder;
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        unbinder = ButterKnife.bind(this, rootView);
-        ivAvatar.setVisibility(View.VISIBLE);
-        layBase.setVisibility(View.VISIBLE);
-        tvTransNfc.setVisibility(View.VISIBLE);
-        tvShare.setVisibility(View.VISIBLE);
-        tvEdit.setVisibility(View.VISIBLE);
-        layCreateCard.setVisibility(View.GONE);
-        return rootView;
-    }
 
     @Override
     protected int getContentId() {
@@ -71,19 +53,23 @@ public class SendCardFragment extends BaseFragment<SendCardPresent, SendCardMode
     }
 
     @Override
-    protected SendCardPresent initPresenter() {
-        return new SendCardPresent(mContext);
+    protected void initView() {
+        ivAvatar.setVisibility(View.VISIBLE);
+        layBase.setVisibility(View.VISIBLE);
+        tvTransNfc.setVisibility(View.VISIBLE);
+        tvShare.setVisibility(View.VISIBLE);
+        tvEdit.setVisibility(View.VISIBLE);
+        layCreateCard.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected SendCardPresenter initPresenter() {
+        return new SendCardPresenter(mContext);
     }
 
     @Override
     protected SendCardModel initModel() {
         return new SendCardModel();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
     }
 
     @OnClick({R.id.tv_trans_nfc, R.id.tv_share, R.id.tv_edit, R.id.lay_create})
@@ -95,9 +81,10 @@ public class SendCardFragment extends BaseFragment<SendCardPresent, SendCardMode
             case R.id.tv_share:
                 break;
             case R.id.tv_edit:
-                mPresenter.toEdit();
+                mPresenter.toEdit(new Bundle());
                 break;
             case R.id.lay_create:
+                mPresenter.toEdit(new Bundle());
                 break;
         }
     }

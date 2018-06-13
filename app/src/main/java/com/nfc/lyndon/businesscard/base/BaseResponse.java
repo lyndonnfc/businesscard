@@ -2,33 +2,33 @@ package com.nfc.lyndon.businesscard.base;
 
 public class BaseResponse<T> {
 
-    private int result;
+    private int stat;
 
-    private String message;
+    private String msg;
 
-    private T data;
+    private T result;
 
-    public int getResult() {
+    public int getStat() {
+        return stat;
+    }
+
+    public void setStat(int stat) {
+        this.stat = stat;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
+    public T getResult() {
         return result;
     }
 
-    public void setResult(int result) {
+    public void setResult(T result) {
         this.result = result;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
     }
 }

@@ -5,12 +5,12 @@ import android.os.Bundle;
 import com.nfc.lyndon.businesscard.R;
 import com.nfc.lyndon.businesscard.base.MvpActivity;
 import com.nfc.lyndon.businesscard.model.ResultModel;
-import com.nfc.lyndon.businesscard.presenter.ResultPresent;
+import com.nfc.lyndon.businesscard.presenter.ResultPresenter;
 
 /**
  * 结果页面
  */
-public class ResultActivity extends MvpActivity<ResultPresent, ResultModel> {
+public class ResultActivity extends MvpActivity<ResultPresenter, ResultModel> {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +28,8 @@ public class ResultActivity extends MvpActivity<ResultPresent, ResultModel> {
     }
 
     @Override
-    protected ResultPresent initPresenter() {
-        return new ResultPresent();
+    protected ResultPresenter initPresenter() {
+        return new ResultPresenter();
     }
 
     @Override

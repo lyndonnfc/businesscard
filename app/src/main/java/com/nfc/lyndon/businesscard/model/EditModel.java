@@ -1,5 +1,6 @@
 package com.nfc.lyndon.businesscard.model;
 
+import com.lzy.okgo.callback.StringCallback;
 import com.nfc.lyndon.businesscard.contract.EditContract;
 
 /**
@@ -7,4 +8,18 @@ import com.nfc.lyndon.businesscard.contract.EditContract;
  */
 
 public class EditModel implements EditContract.EditModel {
+
+    @Override
+    public void createCard(long uid, String realName, String phone, String position,
+                           String department, String companyName, String email, String address,
+                           StringCallback callback) {
+
+    }
+
+    @Override
+    public void editCard(long uid, String realName, String phone, String position,
+                         String department, String companyName, String email, String address,
+                         StringCallback callback) {
+
+    }
 }

@@ -17,7 +17,6 @@ public interface SendCardContract {
     interface SendCardModel extends BaseModel {
     }
 
-    abstract class SendCardPresenter extends BasePresenter<SendCardContract.SendCardModel,
-            SendCardContract.SendCardView> {
+    abstract class SendCardPresenter extends BasePresenter<SendCardModel, SendCardView> {
     }
 }

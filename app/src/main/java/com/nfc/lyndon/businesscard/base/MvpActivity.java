@@ -18,48 +18,15 @@ import com.nfc.lyndon.businesscard.R;
 
 import butterknife.ButterKnife;
 
-public abstract class MvpActivity<T extends BasePresenter, M extends BaseModel> extends AppCompatActivity {
+public abstract class MvpActivity<T extends BasePresenter, M extends BaseModel> extends BaseActivity {
 
     public T mPresenter;
 
     public M mModel;
 
-    protected Context mContext;
-
-    public static Typeface mTypeface;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mContext = this;
-        if (mTypeface == null) {
-            mTypeface = Typeface.createFromAsset(getAssets(), "lfbsf.ttf");
-        }
-
-        LayoutInflaterCompat.setFactory2(LayoutInflater.from(mContext), new LayoutInflater.Factory2() {
-            @Override
-            public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
-                AppCompatDelegate delegate = getDelegate();
-                View view = delegate.createView(parent, name, context, attrs);
-                if (view != null && (view instanceof TextView)) {
-                    ((TextView) view).setTypeface(mTypeface);
-                }
-                if(view !=null && (view instanceof EditText)){
-                    ((EditText) view).setTypeface(mTypeface);
-                }
-                return view;
-            }
-
-            @Override
-            public View onCreateView(String name, Context context, AttributeSet attrs) {
-                return null;
-            }
-        });
         super.onCreate(savedInstanceState);
-
-        setContentView(getLayoutResId());
-
-        StatusBarUtil.setColor(this, ContextCompat.getColor(mContext, R.color.blue));
-        ButterKnife.bind(this);
 
         //内部获取第一个类型参数的真实类型  ，反射new出对象
         mPresenter = initPresenter();
@@ -77,8 +44,6 @@ public abstract class MvpActivity<T extends BasePresenter, M extends BaseModel> 
     }
 
     public abstract void initView();
-
-    public abstract int getLayoutResId() ;
 
     protected abstract T initPresenter();
 

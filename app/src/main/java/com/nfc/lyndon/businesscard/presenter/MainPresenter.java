@@ -11,7 +11,7 @@ import com.nfc.lyndon.businesscard.contract.MainContract;
 import com.nfc.lyndon.businesscard.ui.fragment.CardListFragment;
 import com.nfc.lyndon.businesscard.ui.fragment.SendCardFragment;
 
-public class MainPresent extends MainContract.MainPresenter{
+public class MainPresenter extends MainContract.MainPresenter{
 
     private CardListFragment cardListFragment;
     private SendCardFragment sendCardFragment;

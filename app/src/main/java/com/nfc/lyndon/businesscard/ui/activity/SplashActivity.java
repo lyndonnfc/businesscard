@@ -6,7 +6,7 @@ import android.os.Handler;
 
 import com.nfc.lyndon.businesscard.R;
 import com.nfc.lyndon.businesscard.base.BaseActivity;
-import com.nfc.lyndon.businesscard.ui.fragment.CardListFragment;
+import com.nfc.lyndon.businesscard.manager.PreferenceManager;
 
 /**
  * 启动页
@@ -16,14 +16,23 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(mContext, MainActivity.class);
-                startActivity(intent);
+                if (PreferenceManager.getInstance().getBoolean(PreferenceManager.IS_LOGIN)) {
+                    Intent intent = new Intent(mContext, MainActivity.class);
+                    startActivity(intent);
+                } else {
+                    Intent intent = new Intent(mContext, LoginActivity.class);
+                    startActivity(intent);
+                }
                 finish();
             }
         }, 1500);
+    }
+
+    @Override
+    public int getLayoutResId() {
+        return R.layout.activity_splash;
     }
 }

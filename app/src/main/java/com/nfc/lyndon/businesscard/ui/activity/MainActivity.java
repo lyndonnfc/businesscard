@@ -7,9 +7,8 @@ import android.widget.TextView;
 
 import com.nfc.lyndon.businesscard.R;
 import com.nfc.lyndon.businesscard.base.MvpActivity;
-import com.nfc.lyndon.businesscard.contract.MainContract;
 import com.nfc.lyndon.businesscard.model.MainModel;
-import com.nfc.lyndon.businesscard.presenter.MainPresent;
+import com.nfc.lyndon.businesscard.presenter.MainPresenter;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -17,7 +16,7 @@ import butterknife.OnClick;
 /**
  * 主页面
  */
-public class MainActivity extends MvpActivity<MainPresent, MainModel>{
+public class MainActivity extends MvpActivity<MainPresenter, MainModel>{
 
     @BindView(R.id.tv_list)
     TextView tvList;
@@ -42,8 +41,8 @@ public class MainActivity extends MvpActivity<MainPresent, MainModel>{
     }
 
     @Override
-    protected MainPresent initPresenter() {
-        return new MainPresent();
+    protected MainPresenter initPresenter() {
+        return new MainPresenter();
     }
 
     @Override

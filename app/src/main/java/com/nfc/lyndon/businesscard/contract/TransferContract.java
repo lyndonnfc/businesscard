@@ -10,13 +10,11 @@ import com.nfc.lyndon.businesscard.base.BaseView;
 public interface TransferContract {
 
     interface TransferView extends BaseView {
-
     }
 
     interface TransferModel extends BaseModel {
     }
 
-    abstract class TransferPresenter extends BasePresenter<TransferContract.TransferModel,
-            TransferContract.TransferView> {
+    abstract class TransferPresenter extends BasePresenter<TransferModel, TransferView> {
     }
 }

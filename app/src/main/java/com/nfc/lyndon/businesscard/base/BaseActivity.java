@@ -55,11 +55,7 @@ public abstract class BaseActivity extends AppCompatActivity{
             }
         });
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public void setContentView(int layoutResID) {
-        super.setContentView(layoutResID);
+        setContentView(getLayoutResId());
         StatusBarUtil.setColor(this, ContextCompat.getColor(mContext, R.color.blue));
         ButterKnife.bind(this);
     }
@@ -75,4 +71,7 @@ public abstract class BaseActivity extends AppCompatActivity{
                 .apply(new RequestOptions().error(R.mipmap.ic_launcher))
                 .into(imageView);
     }
+
+    public abstract int getLayoutResId();
+
 }

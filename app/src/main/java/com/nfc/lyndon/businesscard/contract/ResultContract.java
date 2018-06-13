@@ -17,7 +17,6 @@ public interface ResultContract {
     interface ResultModel extends BaseModel {
     }
 
-    abstract class ResultPresenter extends BasePresenter<ResultContract.ResultModel,
-            ResultContract.ResultView> {
+    abstract class ResultPresenter extends BasePresenter<ResultModel, ResultView> {
     }
 }

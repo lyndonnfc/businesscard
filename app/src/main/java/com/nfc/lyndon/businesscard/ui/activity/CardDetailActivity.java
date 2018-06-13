@@ -11,8 +11,9 @@ import android.widget.TextView;
 
 import com.nfc.lyndon.businesscard.R;
 import com.nfc.lyndon.businesscard.base.MvpActivity;
+import com.nfc.lyndon.businesscard.contract.DetailContract;
 import com.nfc.lyndon.businesscard.model.DetailModel;
-import com.nfc.lyndon.businesscard.presenter.DetailPresent;
+import com.nfc.lyndon.businesscard.presenter.DetailPresenter;
 import com.nfc.lyndon.businesscard.util.BitmapUtils;
 
 import butterknife.BindView;
@@ -25,7 +26,8 @@ import permissions.dispatcher.RuntimePermissions;
  * 名片详情
  */
 @RuntimePermissions
-public class CardDetailActivity extends MvpActivity<DetailPresent, DetailModel> {
+public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel> implements
+        DetailContract.DetailView {
 
     @BindView(R.id.tv_name)
     TextView tvName;
@@ -48,21 +50,18 @@ public class CardDetailActivity extends MvpActivity<DetailPresent, DetailModel> 
     @BindView(R.id.lay_top)
     ConstraintLayout layTop;
 
-    public static void startActivity(Context context, String id) {
+    private long id;
+
+    public static void startActivity(Context context, long id) {
         Intent intent = new Intent(context, CardDetailActivity.class);
         intent.putExtra("cardId", id);
         context.startActivity(intent);
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        ButterKnife.bind(this);
-    }
-
-    @Override
     public void initView() {
-
+        id = getIntent().getLongExtra("cardId", 0);
+        mPresenter.requestDetail(id);
     }
 
     @Override
@@ -71,8 +70,8 @@ public class CardDetailActivity extends MvpActivity<DetailPresent, DetailModel> 
     }
 
     @Override
-    protected DetailPresent initPresenter() {
-        return new DetailPresent(mContext);
+    protected DetailPresenter initPresenter() {
+        return new DetailPresenter(mContext);
     }
 
     @Override
@@ -87,12 +86,14 @@ public class CardDetailActivity extends MvpActivity<DetailPresent, DetailModel> 
                 CardDetailActivityPermissionsDispatcher.shareWithPermissionCheck(this, layTop);
                 break;
             case R.id.tv_edit:
-                mPresenter.toEdit();
+                Bundle bundle = new Bundle();
+                mPresenter.toEdit(bundle);
                 break;
             case R.id.tv_trans_nfc:
                 mPresenter.toTransfer();
                 break;
             case R.id.tv_delete:
+                mPresenter.deleteCard(id);
                 break;
         }
     }
@@ -104,5 +105,15 @@ public class CardDetailActivity extends MvpActivity<DetailPresent, DetailModel> 
         imageIntent.putExtra(Intent.EXTRA_STREAM,
                 BitmapUtils.getUri(v, this));
         startActivity(Intent.createChooser(imageIntent, "分享"));
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void hidLoading() {
+
     }
 }
