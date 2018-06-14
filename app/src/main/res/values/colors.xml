@@ -11,4 +11,5 @@
     <color name="blue">#00a2e9</color>
     <color name="text_color_333">#333333</color>
     <color name="line_color">#dddddd</color>
+    <color name="text_color_999">#999999</color>
 </resources>

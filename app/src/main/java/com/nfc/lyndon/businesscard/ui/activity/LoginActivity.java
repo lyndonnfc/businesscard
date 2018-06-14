@@ -72,16 +72,14 @@ public class LoginActivity extends MvpActivity<LoginPresenter, LoginModel> imple
                 mPresenter.requestCode(phone);
                 break;
             case R.id.btn_login:
-//                if (!StringUtils.isMobileNo(phone)){
-//                    ToastUtils.toastShort("请输入正确的手机号");
-//                    return;
-//                } else if (TextUtils.isEmpty(code)){
-//                    ToastUtils.toastShort("请输入验证码");
-//                    return;
-//                }
-//                mPresenter.login(code, phone);
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
+                if (!StringUtils.isMobileNo(phone)){
+                    ToastUtils.toastShort("请输入正确的手机号");
+                    return;
+                } else if (TextUtils.isEmpty(code)){
+                    ToastUtils.toastShort("请输入验证码");
+                    return;
+                }
+                mPresenter.login(code, phone);
                 break;
         }
     }
@@ -89,12 +87,43 @@ public class LoginActivity extends MvpActivity<LoginPresenter, LoginModel> imple
     @Override
     public void startCountDown() {
         tvCode.setEnabled(false);
+        mHandler.postDelayed(runnable, 1000);
     }
 
     @Override
     public void endCountDown() {
+        mHandler.removeCallbacks(runnable);
         tvCode.setEnabled(true);
         tvCode.setText("重新获取");
+        time = 60;
+    }
+
+    @Override
+    public void success(final String msg) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ToastUtils.toastShort(msg);
+            }
+        });
+    }
+
+    @Override
+    public void failed(final String msg) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ToastUtils.toastShort(msg);
+                endCountDown();
+            }
+        });
+    }
+
+    @Override
+    public void toMain() {
+        Intent intent = new Intent(mContext, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     WeakHandler mHandler = new WeakHandler(new Handler.Callback() {
@@ -122,4 +151,10 @@ public class LoginActivity extends MvpActivity<LoginPresenter, LoginModel> imple
             }
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mHandler.removeCallbacks(runnable);
+    }
 }

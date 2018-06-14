@@ -66,6 +66,19 @@
                 android:textSize="@dimen/sp_14"
                 app:layout_constraintTop_toBottomOf="@id/et_name" />
 
+            <EditText
+                android:id="@+id/et_department"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_43"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_edit"
+                android:drawableEnd="@drawable/icon_compile"
+                android:paddingEnd="12dp"
+                android:paddingStart="@dimen/dp_72"
+                android:textColor="@color/text_color_333"
+                android:textSize="@dimen/sp_14"
+                app:layout_constraintTop_toBottomOf="@id/et_company" />
+
 
             <EditText
                 android:id="@+id/et_position"
@@ -78,7 +91,7 @@
                 android:paddingStart="@dimen/dp_72"
                 android:textColor="@color/text_color_333"
                 android:textSize="@dimen/sp_14"
-                app:layout_constraintTop_toBottomOf="@id/et_company" />
+                app:layout_constraintTop_toBottomOf="@id/et_department" />
 
             <EditText
                 android:id="@+id/et_mobile"
@@ -94,21 +107,6 @@
                 android:textSize="@dimen/sp_14"
                 app:layout_constraintTop_toBottomOf="@id/et_position" />
 
-
-            <EditText
-                android:id="@+id/et_fax"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_43"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_edit"
-                android:drawableEnd="@drawable/icon_compile"
-                android:inputType="phone"
-                android:paddingEnd="12dp"
-                android:paddingStart="@dimen/dp_72"
-                android:textColor="@color/text_color_333"
-                android:textSize="@dimen/sp_14"
-                app:layout_constraintTop_toBottomOf="@id/et_mobile" />
-
             <EditText
                 android:id="@+id/et_email"
                 android:layout_width="match_parent"
@@ -121,7 +119,7 @@
                 android:paddingStart="@dimen/dp_72"
                 android:textColor="@color/text_color_333"
                 android:textSize="@dimen/sp_14"
-                app:layout_constraintTop_toBottomOf="@id/et_fax" />
+                app:layout_constraintTop_toBottomOf="@id/et_mobile" />
 
             <EditText
                 android:id="@+id/et_address"
@@ -184,12 +182,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="22dp"
-                android:text="@string/fax"
+                android:text="@string/department"
                 android:textColor="@color/blue"
                 android:textSize="@dimen/sp_14"
-                app:layout_constraintBottom_toBottomOf="@id/et_fax"
-                app:layout_constraintStart_toStartOf="@id/et_fax"
-                app:layout_constraintTop_toTopOf="@id/et_fax" />
+                app:layout_constraintBottom_toBottomOf="@id/et_department"
+                app:layout_constraintStart_toStartOf="@id/et_department"
+                app:layout_constraintTop_toTopOf="@id/et_department" />
 
             <TextView
                 android:layout_width="wrap_content"

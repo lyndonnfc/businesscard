@@ -22,7 +22,7 @@ public class CardAdapter extends BaseQuickAdapter<CardEntity, BaseViewHolder> {
     @Override
     protected void convert(BaseViewHolder helper, CardEntity item) {
         Glide.with(mContext)
-                .load(item.getCompanyName())
+                .load(item.getLogo())
                 .apply(new RequestOptions().circleCrop().error(R.drawable.default_avatar))
                 .into((ImageView) helper.getView(R.id.iv_avatar));
 

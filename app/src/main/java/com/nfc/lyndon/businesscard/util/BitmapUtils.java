@@ -380,9 +380,9 @@ public class BitmapUtils {
      * @param context
      * @param bmp
      */
-    public static Uri saveImageToGallery(Context context, Bitmap bmp) {
+    private static Uri saveImageToGallery(Context context, Bitmap bmp) {
         // 首先保存图片
-        File appDir = new File(context.getFilesDir().getPath());
+        File appDir = new File(context.getCacheDir().getPath());
         String fileName = "business.jpg";
         File file = new File(appDir, fileName);
         try {

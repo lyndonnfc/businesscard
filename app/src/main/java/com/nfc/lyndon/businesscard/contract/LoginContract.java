@@ -3,6 +3,7 @@ package com.nfc.lyndon.businesscard.contract;
 import com.lzy.okgo.callback.StringCallback;
 import com.nfc.lyndon.businesscard.base.BaseModel;
 import com.nfc.lyndon.businesscard.base.BasePresenter;
+import com.nfc.lyndon.businesscard.base.BaseResponse;
 import com.nfc.lyndon.businesscard.base.BaseView;
 
 public interface LoginContract {
@@ -12,6 +13,12 @@ public interface LoginContract {
         void startCountDown();
 
         void endCountDown();
+
+        void success(String msg);
+
+        void failed(String msg);
+
+        void toMain();
     }
 
     interface LoginModel extends BaseModel{

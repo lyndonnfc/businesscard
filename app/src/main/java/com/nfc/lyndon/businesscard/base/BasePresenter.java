@@ -1,5 +1,7 @@
 package com.nfc.lyndon.businesscard.base;
 
+import android.os.Message;
+
 import java.lang.ref.WeakReference;
 
 public abstract class BasePresenter<M, V> {
@@ -10,6 +12,7 @@ public abstract class BasePresenter<M, V> {
 
     public WeakReference<V> mViewRef;
 
+    public Message message;
 
     public void attachModelView(M pModel, V pView) {
 

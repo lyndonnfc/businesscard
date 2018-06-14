@@ -4,6 +4,7 @@ import com.lzy.okgo.callback.StringCallback;
 import com.nfc.lyndon.businesscard.base.BaseModel;
 import com.nfc.lyndon.businesscard.base.BasePresenter;
 import com.nfc.lyndon.businesscard.base.BaseView;
+import com.nfc.lyndon.businesscard.entity.CardEntity;
 import com.nfc.lyndon.businesscard.model.CardModel;
 
 import java.util.List;
@@ -18,6 +19,10 @@ public interface CardListContract {
         void showLoading();
 
         void hidLoading();
+
+        void showAddView();
+
+        void updateView(List<CardEntity> data);
     }
 
     interface CardListModel extends BaseModel {
