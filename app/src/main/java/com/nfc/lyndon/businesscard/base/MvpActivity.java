@@ -1,28 +1,17 @@
 package com.nfc.lyndon.businesscard.base;
 
-import android.content.Context;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.LayoutInflaterCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
-import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
 
-import com.jaeger.library.StatusBarUtil;
 import com.nfc.lyndon.businesscard.R;
-
-import butterknife.ButterKnife;
+import com.nfc.lyndon.businesscard.widget.ProgressDialog;
 
 public abstract class MvpActivity<T extends BasePresenter, M extends BaseModel> extends BaseActivity {
 
     public T mPresenter;
 
     public M mModel;
+
+    public ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +30,7 @@ public abstract class MvpActivity<T extends BasePresenter, M extends BaseModel> 
     protected void onDestroy() {
         super.onDestroy();
         mPresenter.onDetach();
+        dialog = null;
     }
 
     public abstract void initView();
@@ -48,4 +38,16 @@ public abstract class MvpActivity<T extends BasePresenter, M extends BaseModel> 
     protected abstract T initPresenter();
 
     protected abstract M initModel();
+
+    public void showDialog(String message){
+        dialog = new ProgressDialog(mContext, R.style.transparent_dialog);
+        dialog.show();
+        dialog.setMessage(message);
+    }
+
+    public void hidDialog(){
+        if (dialog != null){
+            dialog.dismiss();
+        }
+    }
 }

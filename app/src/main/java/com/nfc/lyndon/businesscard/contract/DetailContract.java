@@ -4,6 +4,7 @@ import com.lzy.okgo.callback.StringCallback;
 import com.nfc.lyndon.businesscard.base.BaseModel;
 import com.nfc.lyndon.businesscard.base.BasePresenter;
 import com.nfc.lyndon.businesscard.base.BaseView;
+import com.nfc.lyndon.businesscard.entity.CardEntity;
 
 /**
  * Created by Administrator on 2018/6/12.
@@ -12,9 +13,11 @@ import com.nfc.lyndon.businesscard.base.BaseView;
 public interface DetailContract {
 
     interface DetailView extends BaseView {
-        void showLoading();
+        void showLoading(String message);
 
         void hidLoading();
+
+        void showData(CardEntity cardEntity);
     }
 
     interface DetailModel extends BaseModel {

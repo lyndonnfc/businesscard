@@ -9,15 +9,18 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.nfc.lyndon.businesscard.R;
 import com.nfc.lyndon.businesscard.base.MvpActivity;
 import com.nfc.lyndon.businesscard.contract.DetailContract;
+import com.nfc.lyndon.businesscard.entity.CardEntity;
 import com.nfc.lyndon.businesscard.model.DetailModel;
 import com.nfc.lyndon.businesscard.presenter.DetailPresenter;
 import com.nfc.lyndon.businesscard.util.BitmapUtils;
+import com.nfc.lyndon.businesscard.widget.ConfirmOrCancelDialog;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
@@ -41,8 +44,8 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
     ImageView ivAvatar;
     @BindView(R.id.tv_mobile)
     TextView tvMobile;
-    @BindView(R.id.tv_fax)
-    TextView tvFax;
+    @BindView(R.id.tv_department)
+    TextView tvDepartment;
     @BindView(R.id.tv_email)
     TextView tvEmail;
     @BindView(R.id.tv_address)
@@ -93,7 +96,16 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
                 mPresenter.toTransfer();
                 break;
             case R.id.tv_delete:
-                mPresenter.deleteCard(id);
+                ConfirmOrCancelDialog dialog = new ConfirmOrCancelDialog(mContext,
+                        R.style.transparent_dialog);
+                dialog.setOnDialogClickListener(new ConfirmOrCancelDialog.OnDialogClickListener() {
+                    @Override
+                    public void confirm() {
+                        mPresenter.deleteCard(id);
+                    }
+                });
+                dialog.show();
+                dialog.setMessage("确定要删除此名片吗");
                 break;
         }
     }
@@ -108,12 +120,28 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
     }
 
     @Override
-    public void showLoading() {
-
+    public void showLoading(String message) {
+        showDialog(message);
     }
 
     @Override
     public void hidLoading() {
+        hidDialog();
 
+    }
+
+    @Override
+    public void showData(CardEntity cardEntity) {
+        Glide.with(mContext)
+                .load(cardEntity.getLogo())
+                .apply(new RequestOptions().circleCrop())
+                .into(ivAvatar);
+        tvName.setText(cardEntity.getRealName());
+        tvPosition.setText(cardEntity.getPosition());
+        tvCompany.setText(cardEntity.getCompanyName());
+        tvMobile.setText(cardEntity.getPhone());
+        tvDepartment.setText(cardEntity.getDepartment());
+        tvEmail.setText(cardEntity.getEmail());
+        tvAddress.setText(cardEntity.getAddress());
     }
 }

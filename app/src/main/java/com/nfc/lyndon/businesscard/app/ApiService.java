@@ -25,7 +25,7 @@ public interface ApiService {
     /**
      * 获取名片详情
      */
-    String GET_CARD_DETAIL = Constants.HOST + "nfc_server/nfccard/getBusinessCardById";
+    String GET_CARD_DETAIL = Constants.HOST + "/nfc_server/nfccard/getBusinessCardById";
 
     /**
      * 上传名片图片

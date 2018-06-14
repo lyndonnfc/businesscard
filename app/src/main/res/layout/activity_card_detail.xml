@@ -101,7 +101,7 @@
                 app:layout_constraintTop_toBottomOf="@id/lay_base" />
 
             <TextView
-                android:id="@+id/tv_fax"
+                android:id="@+id/tv_department"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_43"
                 android:layout_marginHorizontal="38dp"
@@ -128,7 +128,7 @@
                 android:paddingStart="12dp"
                 android:textColor="@color/text_color_333"
                 android:textSize="@dimen/sp_14"
-                app:layout_constraintTop_toBottomOf="@id/tv_fax" />
+                app:layout_constraintTop_toBottomOf="@id/tv_department" />
 
             <TextView
                 android:id="@+id/tv_address"
@@ -160,12 +160,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="22dp"
-                android:text="@string/fax"
+                android:text="@string/department"
                 android:textColor="@color/blue"
                 android:textSize="@dimen/sp_14"
-                app:layout_constraintBottom_toBottomOf="@id/tv_fax"
-                app:layout_constraintStart_toStartOf="@id/tv_fax"
-                app:layout_constraintTop_toTopOf="@id/tv_fax" />
+                app:layout_constraintBottom_toBottomOf="@id/tv_department"
+                app:layout_constraintStart_toStartOf="@id/tv_department"
+                app:layout_constraintTop_toTopOf="@id/tv_department" />
 
             <TextView
                 android:layout_width="wrap_content"

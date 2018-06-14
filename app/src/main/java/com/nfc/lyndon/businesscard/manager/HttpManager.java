@@ -87,7 +87,7 @@ public class HttpManager {
      * @param callback callback
      */
     public void getCardDetail(long cardId, StringCallback callback) {
-        OkGo.<String>post(ApiService.GET_CARD_DETAIL)
+        OkGo.<String>get(ApiService.GET_CARD_DETAIL)
                 .tag(this)
                 .params("cardId", cardId)
                 .execute(callback);
@@ -143,17 +143,19 @@ public class HttpManager {
     public void updateCard(long uid, String logo, String realName, String phone, String position,
                            String department, String companyName, String email, String address,
                            StringCallback callback) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("uid", uid);
+        params.put("logo", logo);
+        params.put("realName", realName);
+        params.put("phone", phone);
+        params.put("position", position);
+        params.put("department", department);
+        params.put("companyName", companyName);
+        params.put("email", email);
+        params.put("address", address);
         OkGo.<String>post(ApiService.UPDATE_BUSINESS_CARD)
                 .tag(this)
-                .params("uid", uid)
-                .params("logo", logo)
-                .params("realName", realName)
-                .params("phone", phone)
-                .params("position", position)
-                .params("department", department)
-                .params("companyName", companyName)
-                .params("email", email)
-                .params("address", address)
+                .upJson(JSON.toJSONString(params))
                 .execute(callback);
     }
 
@@ -190,9 +192,11 @@ public class HttpManager {
      * @param callback callback
      */
     public void deleteCard(long cardId, StringCallback callback) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("cardId", cardId);
         OkGo.<String>post(ApiService.DELETE_BUSINESS_CARD)
                 .tag(this)
-                .params("cardId", cardId)
+                .upJson(JSON.toJSONString(params))
                 .execute(callback);
     }
 }
