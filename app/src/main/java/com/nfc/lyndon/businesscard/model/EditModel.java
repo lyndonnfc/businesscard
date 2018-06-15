@@ -18,18 +18,18 @@ public class EditModel implements EditContract.EditModel {
     }
 
     @Override
-    public void createCard(long uid, String logo, String realName, String phone, String position,
+    public void createCard(long uid, boolean isSelf, String logo, String realName, String phone, String position,
                            String department, String companyName, String email, String address,
                            StringCallback callback) {
-        HttpManager.getInstance().createCard(uid, logo, realName, phone, position, department,
+        HttpManager.getInstance().createCard(uid, isSelf, logo, realName, phone, position, department,
                 companyName, email, address, callback);
     }
 
     @Override
-    public void editCard(long uid, String logo, String realName, String phone, String position,
+    public void editCard(long id, long uid, String logo, String realName, String phone, String position,
                          String department, String companyName, String email, String address,
                          StringCallback callback) {
-        HttpManager.getInstance().updateCard(uid, logo, realName, phone, position, department,
+        HttpManager.getInstance().updateCard(id, uid, logo, realName, phone, position, department,
                 companyName, email, address, callback);
     }
 }

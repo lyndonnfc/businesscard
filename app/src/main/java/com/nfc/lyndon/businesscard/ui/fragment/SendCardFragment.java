@@ -7,8 +7,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.nfc.lyndon.businesscard.R;
 import com.nfc.lyndon.businesscard.base.BaseFragment;
+import com.nfc.lyndon.businesscard.contract.SendCardContract;
+import com.nfc.lyndon.businesscard.entity.CardEntity;
+import com.nfc.lyndon.businesscard.manager.PreferenceManager;
 import com.nfc.lyndon.businesscard.model.SendCardModel;
 import com.nfc.lyndon.businesscard.presenter.SendCardPresenter;
 
@@ -18,7 +23,8 @@ import butterknife.OnClick;
 /**
  * 递名片页面
  */
-public class SendCardFragment extends BaseFragment<SendCardPresenter, SendCardModel> {
+public class SendCardFragment extends BaseFragment<SendCardPresenter, SendCardModel> implements
+        SendCardContract.SendCardView {
 
     @BindView(R.id.tv_name)
     TextView tvName;
@@ -47,6 +53,8 @@ public class SendCardFragment extends BaseFragment<SendCardPresenter, SendCardMo
     @BindView(R.id.tv_create_desc)
     TextView tvCreateDesc;
 
+    private CardEntity cardEntity;
+
     @Override
     protected int getContentId() {
         return R.layout.fragment_send_card;
@@ -54,12 +62,12 @@ public class SendCardFragment extends BaseFragment<SendCardPresenter, SendCardMo
 
     @Override
     protected void initView() {
-        ivAvatar.setVisibility(View.VISIBLE);
-        layBase.setVisibility(View.VISIBLE);
-        tvTransNfc.setVisibility(View.VISIBLE);
-        tvShare.setVisibility(View.VISIBLE);
-        tvEdit.setVisibility(View.VISIBLE);
-        layCreateCard.setVisibility(View.GONE);
+        ivAvatar.setVisibility(View.GONE);
+        layBase.setVisibility(View.GONE);
+        tvTransNfc.setVisibility(View.GONE);
+        tvShare.setVisibility(View.GONE);
+        tvEdit.setVisibility(View.GONE);
+        layCreateCard.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -81,11 +89,53 @@ public class SendCardFragment extends BaseFragment<SendCardPresenter, SendCardMo
             case R.id.tv_share:
                 break;
             case R.id.tv_edit:
-                mPresenter.toEdit(new Bundle());
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("isCreate", false);
+                bundle.putLong("cardId", cardEntity.getId());
+                bundle.putSerializable("cardInfo", cardEntity);
+                mPresenter.toEdit(bundle);
                 break;
             case R.id.lay_create:
-                mPresenter.toEdit(new Bundle());
+                Bundle create_bundle = new Bundle();
+                create_bundle.putBoolean("isCreate", true);
+                create_bundle.putBoolean("isSelf", true);
+                mPresenter.toEdit(create_bundle);
                 break;
         }
+    }
+
+    @Override
+    public void showData(CardEntity cardEntity) {
+        this.cardEntity = new CardEntity();
+        this.cardEntity = cardEntity;
+        ivAvatar.setVisibility(View.VISIBLE);
+        layBase.setVisibility(View.VISIBLE);
+        tvTransNfc.setVisibility(View.VISIBLE);
+        tvShare.setVisibility(View.VISIBLE);
+        tvEdit.setVisibility(View.VISIBLE);
+        layCreateCard.setVisibility(View.GONE);
+        Glide.with(mContext)
+                .load(cardEntity.getLogo())
+                .apply(new RequestOptions().circleCrop())
+                .into(ivAvatar);
+        tvName.setText(cardEntity.getRealName());
+        tvPosition.setText(cardEntity.getPosition());
+        tvCompany.setText(cardEntity.getCompanyName());
+    }
+
+    @Override
+    public void failed(String message) {
+        ivAvatar.setVisibility(View.GONE);
+        layBase.setVisibility(View.GONE);
+        tvTransNfc.setVisibility(View.GONE);
+        tvShare.setVisibility(View.GONE);
+        tvEdit.setVisibility(View.GONE);
+        layCreateCard.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.requestDetail(PreferenceManager.getInstance().getLong(PreferenceManager.UID));
     }
 }

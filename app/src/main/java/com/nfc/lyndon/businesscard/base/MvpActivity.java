@@ -30,6 +30,7 @@ public abstract class MvpActivity<T extends BasePresenter, M extends BaseModel> 
     protected void onDestroy() {
         super.onDestroy();
         mPresenter.onDetach();
+        hidDialog();
         dialog = null;
     }
 
@@ -46,7 +47,7 @@ public abstract class MvpActivity<T extends BasePresenter, M extends BaseModel> 
     }
 
     public void hidDialog(){
-        if (dialog != null){
+        if (dialog != null && dialog.isShowing()){
             dialog.dismiss();
         }
     }

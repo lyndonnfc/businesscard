@@ -1,12 +1,8 @@
 package com.nfc.lyndon.businesscard.manager;
 
-import android.util.Log;
-
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
-import com.lzy.okgo.request.PostRequest;
 import com.nfc.lyndon.businesscard.app.ApiService;
 
 import java.io.File;
@@ -94,6 +90,19 @@ public class HttpManager {
     }
 
     /**
+     * 获取自己的名片
+     *
+     * @param uid   uid
+     * @param callback callback
+     */
+    public void getSelfCardDetail(long uid, StringCallback callback) {
+        OkGo.<String>get(ApiService.GET_SELF_CARD_DETAIL)
+                .tag(this)
+                .params("uid", uid)
+                .execute(callback);
+    }
+
+    /**
      * 创建名片
      *
      * @param uid         用户id
@@ -107,11 +116,12 @@ public class HttpManager {
      * @param address     地址
      * @param callback    callback
      */
-    public void createCard(long uid, String logo, String realName, String phone, String position,
+    public void createCard(long uid, boolean isSelf, String logo, String realName, String phone, String position,
                            String department, String companyName, String email, String address,
                            StringCallback callback) {
         Map<String, Object> params = new HashMap<>();
         params.put("uid", uid);
+        params.put("isSelf", isSelf);
         params.put("logo", logo);
         params.put("realName", realName);
         params.put("phone", phone);
@@ -140,10 +150,11 @@ public class HttpManager {
      * @param address     地址
      * @param callback    callback
      */
-    public void updateCard(long uid, String logo, String realName, String phone, String position,
+    public void updateCard(long id, long uid, String logo, String realName, String phone, String position,
                            String department, String companyName, String email, String address,
                            StringCallback callback) {
         Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
         params.put("uid", uid);
         params.put("logo", logo);
         params.put("realName", realName);
@@ -191,9 +202,10 @@ public class HttpManager {
      * @param cardId   名片id
      * @param callback callback
      */
-    public void deleteCard(long cardId, StringCallback callback) {
+    public void deleteCard(long cardId, long uid, StringCallback callback) {
         Map<String, Object> params = new HashMap<>();
         params.put("cardId", cardId);
+        params.put("uid", uid);
         OkGo.<String>post(ApiService.DELETE_BUSINESS_CARD)
                 .tag(this)
                 .upJson(JSON.toJSONString(params))

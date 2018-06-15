@@ -16,6 +16,7 @@ import com.nfc.lyndon.businesscard.R;
 import com.nfc.lyndon.businesscard.app.Constants;
 import com.nfc.lyndon.businesscard.base.MvpActivity;
 import com.nfc.lyndon.businesscard.contract.EditContract;
+import com.nfc.lyndon.businesscard.entity.CardEntity;
 import com.nfc.lyndon.businesscard.manager.PreferenceManager;
 import com.nfc.lyndon.businesscard.model.EditModel;
 import com.nfc.lyndon.businesscard.presenter.EditPresenter;
@@ -58,6 +59,10 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
 
     private boolean isCreate;
 
+    private long cardId;
+
+    private boolean isSelf;
+
     private String path;
 
     private String cPath;
@@ -65,6 +70,8 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
     private ProgressDialog dialog;
 
     private String logo;
+
+    private CardEntity cardEntity;
 
     public static void startActivity(Context context, Bundle bundle) {
         Intent intent = new Intent(context, EditActivity.class);
@@ -76,7 +83,7 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
-        mPresenter.initView(ivFont);
+        showData();
     }
 
     @Override
@@ -84,7 +91,17 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             isCreate = bundle.getBoolean("isCreate");
+            isSelf = bundle.getBoolean("isSelf");
+            if (!isCreate){
+                cardId = bundle.getLong("cardId");
+                cardEntity = (CardEntity) bundle.getSerializable("cardInfo");
+            }
         }
+        Glide.with(mContext)
+                .load(R.drawable.img_avatar_bg)
+                .apply(new RequestOptions()
+                .circleCrop())
+                .into(ivFont);
     }
 
     @Override
@@ -147,9 +164,9 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
 
                 if (isCreate){
                     mPresenter.createCard(PreferenceManager.getInstance().getLong(PreferenceManager.UID),
-                            logo, realName, mobile, position, department, company, email, address);
+                            isSelf, logo, realName, mobile, position, department, company, email, address);
                 } else {
-                    mPresenter.editCard(PreferenceManager.getInstance().getLong(PreferenceManager.UID),
+                    mPresenter.editCard(cardId, PreferenceManager.getInstance().getLong(PreferenceManager.UID),
                             logo, realName, mobile, position, department, company, email, address);
                 }
 
@@ -157,6 +174,23 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
             case R.id.btn_cancel:
                 finish();
                 break;
+        }
+    }
+
+    private void showData(){
+        if (cardEntity != null){
+            logo = cardEntity.getLogo();
+            Glide.with(mContext)
+                    .load(cardEntity.getLogo())
+                    .apply(new RequestOptions().circleCrop())
+                    .into(ivFont);
+            etName.setText(cardEntity.getRealName());
+            etCompany.setText(cardEntity.getCompanyName());
+            etDepartment.setText(cardEntity.getDepartment());
+            etPosition.setText(cardEntity.getPosition());
+            etMobile.setText(cardEntity.getPhone());
+            etEmail.setText(cardEntity.getEmail());
+            etAddress.setText(cardEntity.getAddress());
         }
     }
 
@@ -182,11 +216,6 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
     }
 
     @Override
-    public void finishActivity() {
-        finish();
-    }
-
-    @Override
     public void camera() {
         EditActivityPermissionsDispatcher.takePhotoWithPermissionCheck(this);
     }
@@ -200,12 +229,12 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
             Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void takePhoto() {
         path = getExternalCacheDir() + File.separator + "temp.png";
-        AppUtils.openCameraPage(mContext, path);
+        AppUtils.openCameraPage(mContext,this, path);
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void album() {
-        AppUtils.openAlbumPage(mContext);
+        AppUtils.openAlbumPage(this);
     }
 
     @Override

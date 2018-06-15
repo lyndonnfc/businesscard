@@ -14,7 +14,7 @@ public class DetailModel implements DetailContract.DetailModel {
     }
 
     @Override
-    public void deleteCard(long id, StringCallback callback) {
-        HttpManager.getInstance().deleteCard(id, callback);
+    public void deleteCard(long id, long uid,  StringCallback callback) {
+        HttpManager.getInstance().deleteCard(id, uid, callback);
     }
 }

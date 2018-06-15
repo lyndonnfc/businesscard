@@ -28,6 +28,11 @@ public interface ApiService {
     String GET_CARD_DETAIL = Constants.HOST + "/nfc_server/nfccard/getBusinessCardById";
 
     /**
+     * 获取自己名片详情
+     */
+    String GET_SELF_CARD_DETAIL = Constants.HOST + "/nfc_server/nfccard/getSelfBusinessCard";
+
+    /**
      * 上传名片图片
      */
     String UPLOAD_BUSINESS_CARD = Constants.HOST + "/nfc_server/nfccard/uploadBusinessCard";

@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -122,7 +123,7 @@ public class AppUtils {
      *
      * @param context
      */
-    public static void openCameraPage(Context context, String path) {
+    public static void openCameraPage(Context context, Activity activity, String path) {
         //创建一个file，用来存储拍照后的照片
         File file = new File(path);
         try {
@@ -144,16 +145,55 @@ public class AppUtils {
         //启动相机程序
         Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageuri);
-        ((Activity) context).startActivityForResult(intent, Constants.CAMERA_REQUEST_CODE);
+        activity.startActivityForResult(intent, Constants.CAMERA_REQUEST_CODE);
+    }
+
+    /**
+     * 打开相机
+     *
+     * @param context
+     */
+    public static void openCameraPage(Context context, Fragment fragment, String path) {
+        //创建一个file，用来存储拍照后的照片
+        File file = new File(path);
+        try {
+            if (file.exists()) {
+                boolean delete = file.delete();//删除
+            }
+            boolean create = file.createNewFile();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Uri imageuri;
+        if (Build.VERSION.SDK_INT >= 24) {
+            imageuri = FileProvider.getUriForFile(context,
+                    "com.nfc.lyndon.businesscard.fileprovider", //可以是任意字符串
+                    file);
+        } else {
+            imageuri = Uri.fromFile(file);
+        }
+        //启动相机程序
+        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageuri);
+        fragment.startActivityForResult(intent, Constants.CAMERA_REQUEST_CODE);
     }
 
     /**
      * 打开相册
      */
-    public static void openAlbumPage(Context context) {
+    public static void openAlbumPage(Activity activity) {
         Intent pickIntent = new Intent(Intent.ACTION_PICK, null);
         pickIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-        ((Activity) context).startActivityForResult(pickIntent, Constants.ALBUM_REQUEST_CODE);
+        activity.startActivityForResult(pickIntent, Constants.ALBUM_REQUEST_CODE);
+    }
+
+    /**
+     * 打开相册
+     */
+    public static void openAlbumPage(Fragment fragment) {
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, null);
+        pickIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+        fragment.startActivityForResult(pickIntent, Constants.ALBUM_REQUEST_CODE);
     }
 
     /**

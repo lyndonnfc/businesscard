@@ -1,17 +1,29 @@
 package com.nfc.lyndon.businesscard.ui.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.nfc.lyndon.businesscard.R;
+import com.nfc.lyndon.businesscard.app.Constants;
 import com.nfc.lyndon.businesscard.base.BaseFragment;
 import com.nfc.lyndon.businesscard.contract.CardListContract;
 import com.nfc.lyndon.businesscard.entity.CardEntity;
@@ -20,9 +32,15 @@ import com.nfc.lyndon.businesscard.model.CardModel;
 import com.nfc.lyndon.businesscard.presenter.CardListPresenter;
 import com.nfc.lyndon.businesscard.ui.activity.EditActivity;
 import com.nfc.lyndon.businesscard.ui.adapter.CardAdapter;
+import com.nfc.lyndon.businesscard.util.AppUtils;
+import com.nfc.lyndon.businesscard.util.BitmapUtils;
 import com.nfc.lyndon.businesscard.util.ScreenUtils;
 import com.nfc.lyndon.businesscard.widget.PictureSelectorDialog;
+import com.nfc.lyndon.businesscard.widget.ProgressDialog;
 
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +52,7 @@ import butterknife.OnClick;
  */
 public class CardListFragment extends BaseFragment<CardListPresenter, CardModel> implements
         BaseQuickAdapter.OnItemClickListener, CardListContract.CardListView,
-        PictureSelectorDialog.OnDialogClickListener{
+        PictureSelectorDialog.OnDialogClickListener {
 
     private static final int REQUEST_CREATE_CARD = 1;
 
@@ -54,6 +72,10 @@ public class CardListFragment extends BaseFragment<CardListPresenter, CardModel>
     private String keyword = "";
 
     public CardAdapter mAdapter;
+
+    private String path;
+
+    private Bitmap bitmap;
 
     @Override
     protected int getContentId() {
@@ -126,13 +148,13 @@ public class CardListFragment extends BaseFragment<CardListPresenter, CardModel>
     }
 
     @Override
-    public void showLoading() {
-
+    public void showLoading(String message) {
+        showDialog(message);
     }
 
     @Override
     public void hidLoading() {
-
+        hidDialog();
     }
 
     @Override
@@ -150,11 +172,69 @@ public class CardListFragment extends BaseFragment<CardListPresenter, CardModel>
 
     @Override
     public void camera() {
-
+        path = mContext.getExternalCacheDir() + File.separator + "card.png";
+        AppUtils.openCameraPage(mContext, this, path);
     }
 
     @Override
     public void gallery() {
+        path = mContext.getExternalCacheDir() + File.separator + "card.png";
+        AppUtils.openAlbumPage(this);
+    }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case Constants.CAMERA_REQUEST_CODE:
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            bitmap = BitmapUtils.compressImage(BitmapFactory.decodeFile(path), path);
+                            mPresenter.uploadCardFile(new File(path));
+                        }
+                    }).start();
+                    break;
+                case Constants.ALBUM_REQUEST_CODE:
+                    if (data != null && data.getData() != null) {
+                        final Uri uri = data.getData();
+                        showDialog("正在识别...");
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                bitmap = BitmapUtils.compressImage(BitmapFactory.decodeFile(getRealPathFromURI(uri)), path);
+                                mPresenter.uploadCardFile(new File(path));
+                            }
+                        }).start();
+                    }
+                    break;
+            }
+        }
+    }
+
+    /**
+     * 获取图片真实路径
+     * @param contentUri uri
+     * @return
+     */
+    public String getRealPathFromURI(Uri contentUri) {
+        String res = null;
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = mContext.getContentResolver().query(contentUri, proj, null, null, null);
+        if (cursor != null){
+            if (cursor.moveToFirst()){
+                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                res = cursor.getString(column_index);
+            }
+            cursor.close();
+        }
+        return res;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        bitmap = null;
     }
 }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.JsonReader;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
@@ -82,7 +83,6 @@ public class DetailPresenter extends DetailContract.DetailPresenter{
                         message.obj = baseResponse.getResult().getCardInfo();
                         mHandler.sendMessage(message);
                     }
-
                 } else {
                     if (baseResponse!=null){
                         message = new Message();
@@ -112,21 +112,37 @@ public class DetailPresenter extends DetailContract.DetailPresenter{
     }
 
     @Override
-    public void deleteCard(long id) {
+    public void deleteCard(long id, long uid) {
         final DetailContract.DetailView mView = getView();
 
-        mModel.deleteCard(id, new StringCallback() {
+        mModel.deleteCard(id, uid, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
                 mView.hidLoading();
-
+                BaseResponse baseResponse = JSON.parseObject(response.body(), new TypeReference<BaseResponse>(){});
+                if (baseResponse != null && baseResponse.getStat() == Constants.SUCCESS){
+                    message = new Message();
+                    message.what = HANDlER_DELETE_SUCCESS;
+                    message.obj = baseResponse.getMsg();
+                    mHandler.sendMessage(message);
+                } else {
+                    if (baseResponse != null){
+                        message = new Message();
+                        message.what = HANDLER_FAILED;
+                        message.obj = baseResponse.getMsg();
+                        mHandler.sendMessage(message);
+                    }
+                }
             }
 
             @Override
             public void onError(Response<String> response) {
                 super.onError(response);
                 mView.hidLoading();
-
+                message = new Message();
+                message.what = HANDLER_FAILED;
+                message.obj = response.getException().getMessage();
+                mHandler.sendMessage(message);
             }
 
             @Override

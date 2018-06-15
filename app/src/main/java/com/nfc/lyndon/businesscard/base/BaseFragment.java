@@ -8,6 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.nfc.lyndon.businesscard.R;
+import com.nfc.lyndon.businesscard.widget.ProgressDialog;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
@@ -20,6 +23,8 @@ public abstract class BaseFragment<T extends BasePresenter, M extends BaseModel>
     protected Context mContext;
 
     Unbinder unbinder;
+
+    public ProgressDialog dialog;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,6 +47,8 @@ public abstract class BaseFragment<T extends BasePresenter, M extends BaseModel>
     public void onDetach() {
         super.onDetach();
         mPresenter.onDetach();
+        hidDialog();
+        dialog = null;
     }
 
     @Nullable
@@ -77,4 +84,16 @@ public abstract class BaseFragment<T extends BasePresenter, M extends BaseModel>
     protected abstract T initPresenter();
 
     protected abstract M initModel();
+
+    public void showDialog(String message){
+        dialog = new ProgressDialog(mContext, R.style.transparent_dialog);
+        dialog.show();
+        dialog.setMessage(message);
+    }
+
+    public void hidDialog(){
+        if (dialog != null && dialog.isShowing()){
+            dialog.dismiss();
+        }
+    }
 }

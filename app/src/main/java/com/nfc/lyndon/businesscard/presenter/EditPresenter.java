@@ -1,5 +1,6 @@
 package com.nfc.lyndon.businesscard.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
@@ -30,7 +31,9 @@ public class EditPresenter extends EditContract.EditPresenter {
 
     private static final int HANDLER_CREATE_SUCCESS = 2;
 
-    private static final int HANDLER_FAILED = 3;
+    private static final int HANDLER_UPDATE_SUCCESS = 3;
+
+    private static final int HANDLER_FAILED = 4;
 
     private Context mContext;
 
@@ -43,7 +46,11 @@ public class EditPresenter extends EditContract.EditPresenter {
                     break;
                 case HANDLER_CREATE_SUCCESS:
                     ToastUtils.toastShort((String) msg.obj);
-                    getView().finishActivity();
+                    ((Activity)mContext).finish();
+                    break;
+                case HANDLER_UPDATE_SUCCESS:
+                    ToastUtils.toastShort((String) msg.obj);
+                    ((Activity)mContext).finish();
                     break;
                 case HANDLER_FAILED:
                     ToastUtils.toastShort((String) msg.obj);
@@ -55,13 +62,6 @@ public class EditPresenter extends EditContract.EditPresenter {
 
     public EditPresenter(Context context) {
         this.mContext = context;
-    }
-
-    public void initView(ImageView view) {
-        Glide.with(mContext)
-                .load(R.drawable.img_avatar_bg)
-                .apply(new RequestOptions().circleCrop())
-                .into(view);
     }
 
     @Override
@@ -108,10 +108,10 @@ public class EditPresenter extends EditContract.EditPresenter {
     }
 
     @Override
-    public void createCard(long uid, String logo, final String realName, String phone, String position,
+    public void createCard(long uid, boolean isSelf, String logo, final String realName, String phone, String position,
                            String department, String companyName, String email, String address) {
         final EditContract.EditView mView = getView();
-        mModel.createCard(uid, logo, realName, phone, position, department, companyName, email, address,
+        mModel.createCard(uid, isSelf, logo, realName, phone, position, department, companyName, email, address,
                 new StringCallback() {
                     @Override
                     public void onSuccess(Response<String> response) {
@@ -150,24 +150,42 @@ public class EditPresenter extends EditContract.EditPresenter {
                     }
 
                 });
-
     }
 
     @Override
-    public void editCard(long uid, String logo, String realName, String phone, String position,
+    public void editCard(long id, long uid, String logo, String realName, String phone, String position,
                          String department, String companyName, String email, String address) {
         final EditContract.EditView mView = getView();
-        mModel.editCard(uid, logo, realName, phone, position, department, companyName, email, address,
+        mModel.editCard(id, uid, logo, realName, phone, position, department, companyName, email, address,
                 new StringCallback() {
                     @Override
                     public void onSuccess(Response<String> response) {
                         mView.hidLoading();
+                        BaseResponse baseResponse = JSON.parseObject(response.body(), new TypeReference<BaseResponse>() {
+                        });
+                        if (baseResponse != null && baseResponse.getStat() == Constants.SUCCESS) {
+                            message = new Message();
+                            message.what = HANDLER_UPDATE_SUCCESS;
+                            message.obj = baseResponse.getMsg();
+                            mHandler.sendMessage(message);
+                        } else {
+                            if (baseResponse != null) {
+                                message = new Message();
+                                message.what = HANDLER_FAILED;
+                                message.obj = baseResponse.getMsg();
+                                mHandler.sendMessage(message);
+                            }
+                        }
                     }
 
                     @Override
                     public void onError(Response<String> response) {
                         super.onError(response);
                         mView.hidLoading();
+                        message = new Message();
+                        message.what = HANDLER_FAILED;
+                        message.obj = response.getException().getMessage();
+                        mHandler.sendMessage(message);
                     }
 
                     @Override

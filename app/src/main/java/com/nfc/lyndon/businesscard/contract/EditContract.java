@@ -17,16 +17,15 @@ public interface EditContract {
         void showLogo(String imgUrl);
         void showLoading(String message);
         void hidLoading();
-        void finishActivity();
     }
 
     interface EditModel extends BaseModel {
 
         void uploadLogo(File file, StringCallback callback);
 
-        void createCard(long uid, String logo, String realName, String phone, String position, String department,
+        void createCard(long uid, boolean isSelf, String logo, String realName, String phone, String position, String department,
                         String companyName, String email, String address, StringCallback callback);
-        void editCard(long uid, String logo, String realName, String phone, String position, String department,
+        void editCard(long id, long uid, String logo, String realName, String phone, String position, String department,
                       String companyName, String email, String address, StringCallback callback);
     }
 
@@ -34,9 +33,9 @@ public interface EditContract {
 
         public abstract void uploadLogo(File file);
 
-        public abstract void createCard(long uid, String logo, String realName, String phone, String position,
+        public abstract void createCard(long uid, boolean isSelf, String logo, String realName, String phone, String position,
                                         String department, String companyName, String email, String address);
-        public abstract void editCard(long uid, String logo, String realName, String phone, String position,
+        public abstract void editCard(long id, long uid, String logo, String realName, String phone, String position,
                                       String department, String companyName, String email, String address);
     }
 }

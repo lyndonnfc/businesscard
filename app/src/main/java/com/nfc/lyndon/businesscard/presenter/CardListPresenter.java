@@ -28,6 +28,7 @@ import com.nfc.lyndon.businesscard.util.ScreenUtils;
 import com.nfc.lyndon.businesscard.util.ToastUtils;
 import com.nfc.lyndon.businesscard.util.WeakHandler;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,6 +80,7 @@ public class CardListPresenter extends CardListContract.CardListPresenter {
         mModel.requestCardList(uid, keyword, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
+                mView.hidLoading();
                 BaseResponse<CardListEntity> baseResponse = JSON.parseObject(response.body(),
                         new TypeReference<BaseResponse<CardListEntity>>() {
                         });
@@ -110,7 +112,29 @@ public class CardListPresenter extends CardListContract.CardListPresenter {
             @Override
             public void onStart(Request<String, ? extends Request> request) {
                 super.onStart(request);
-                mView.showLoading();
+                mView.showLoading("");
+            }
+        });
+    }
+
+    @Override
+    public void uploadCardFile(File file) {
+        mModel.uploadCardFile(file, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                getView().hidLoading();
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                getView().hidLoading();
+            }
+
+            @Override
+            public void onStart(Request<String, ? extends Request> request) {
+                super.onStart(request);
+                getView().showLoading("正在识别...");
             }
         });
     }

@@ -8,6 +8,9 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.NFC" />
+    <!-- 要求当前设备必须要有NFC芯片 -->
+    <uses-feature android:name="android.hardware.nfc" android:required="true" />
 
     <!-- 允许挂载和反挂载文件系统 -->
     <uses-permission
@@ -58,7 +61,7 @@
             android:configChanges="keyboardHidden|orientation"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity android:name=".ui.activity.TransferActivity" />
-        <activity android:name=".ui.activity.LoginActivity"></activity>
+        <activity android:name=".ui.activity.LoginActivity"/>
     </application>
 
 </manifest>

@@ -15,10 +15,13 @@ import com.nfc.lyndon.businesscard.R;
 import com.nfc.lyndon.businesscard.base.MvpActivity;
 import com.nfc.lyndon.businesscard.contract.DetailContract;
 import com.nfc.lyndon.businesscard.entity.CardEntity;
+import com.nfc.lyndon.businesscard.manager.PreferenceManager;
 import com.nfc.lyndon.businesscard.model.DetailModel;
 import com.nfc.lyndon.businesscard.presenter.DetailPresenter;
 import com.nfc.lyndon.businesscard.util.BitmapUtils;
 import com.nfc.lyndon.businesscard.widget.ConfirmOrCancelDialog;
+
+import java.io.Serializable;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -30,7 +33,7 @@ import permissions.dispatcher.RuntimePermissions;
  */
 @RuntimePermissions
 public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel> implements
-        DetailContract.DetailView {
+        DetailContract.DetailView{
 
     @BindView(R.id.tv_name)
     TextView tvName;
@@ -55,6 +58,8 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
 
     private long id;
 
+    private CardEntity cardEntity;
+
     public static void startActivity(Context context, long id) {
         Intent intent = new Intent(context, CardDetailActivity.class);
         intent.putExtra("cardId", id);
@@ -64,7 +69,6 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
     @Override
     public void initView() {
         id = getIntent().getLongExtra("cardId", 0);
-        mPresenter.requestDetail(id);
     }
 
     @Override
@@ -90,6 +94,9 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
                 break;
             case R.id.tv_edit:
                 Bundle bundle = new Bundle();
+                bundle.putBoolean("isCreate", false);
+                bundle.putLong("cardId", id);
+                bundle.putSerializable("cardInfo", cardEntity);
                 mPresenter.toEdit(bundle);
                 break;
             case R.id.tv_trans_nfc:
@@ -101,7 +108,7 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
                 dialog.setOnDialogClickListener(new ConfirmOrCancelDialog.OnDialogClickListener() {
                     @Override
                     public void confirm() {
-                        mPresenter.deleteCard(id);
+                        mPresenter.deleteCard(id, PreferenceManager.getInstance().getLong(PreferenceManager.UID));
                     }
                 });
                 dialog.show();
@@ -132,6 +139,8 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
 
     @Override
     public void showData(CardEntity cardEntity) {
+        this.cardEntity = new CardEntity();
+        this.cardEntity = cardEntity;
         Glide.with(mContext)
                 .load(cardEntity.getLogo())
                 .apply(new RequestOptions().circleCrop())
@@ -143,5 +152,11 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
         tvDepartment.setText(cardEntity.getDepartment());
         tvEmail.setText(cardEntity.getEmail());
         tvAddress.setText(cardEntity.getAddress());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mPresenter.requestDetail(id);
     }
 }
