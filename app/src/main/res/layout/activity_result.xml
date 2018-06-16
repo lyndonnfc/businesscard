@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     android:background="@drawable/bg_welcome"
     tools:context=".ui.activity.ResultActivity">
 
@@ -13,31 +14,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginHorizontal="@dimen/dp_38">
-
-            <ImageView
-                android:id="@+id/iv_font"
-                android:layout_width="0dp"
-                android:layout_height="76dp"
-                android:layout_weight="1"
-                android:scaleType="centerCrop"
-                android:src="@drawable/img_card"
-                android:contentDescription="@string/font_card"/>
-
-            <ImageView
-                android:id="@+id/iv_back"
-                android:layout_width="0dp"
-                android:layout_height="76dp"
-                android:layout_marginStart="4dp"
-                android:layout_weight="1"
-                android:scaleType="centerCrop"
-                android:src="@drawable/img_card"
-                android:contentDescription="@string/back_card"/>
-        </LinearLayout>
+        <ImageView
+            android:id="@+id/iv_font"
+            android:layout_width="140dp"
+            android:layout_height="76dp"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="centerCrop"
+            android:src="@drawable/img_card"
+            android:contentDescription="@string/font_card"/>
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -100,7 +84,7 @@
 
 
             <EditText
-                android:id="@+id/et_fax"
+                android:id="@+id/et_department"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_43"
                 android:layout_marginTop="8dp"
@@ -125,7 +109,7 @@
                 android:inputType="textEmailAddress"
                 android:textColor="@color/text_color_333"
                 android:textSize="@dimen/sp_14"
-                app:layout_constraintTop_toBottomOf="@id/et_fax" />
+                app:layout_constraintTop_toBottomOf="@id/et_department" />
 
             <EditText
                 android:id="@+id/et_address"
@@ -188,12 +172,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="22dp"
-                android:text="@string/fax"
+                android:text="@string/department"
                 android:textColor="@color/blue"
                 android:textSize="@dimen/sp_14"
-                app:layout_constraintBottom_toBottomOf="@id/et_fax"
-                app:layout_constraintStart_toStartOf="@id/et_fax"
-                app:layout_constraintTop_toTopOf="@id/et_fax" />
+                app:layout_constraintBottom_toBottomOf="@id/et_department"
+                app:layout_constraintStart_toStartOf="@id/et_department"
+                app:layout_constraintTop_toTopOf="@id/et_department" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -229,6 +213,7 @@
             android:orientation="vertical">
             
             <Button
+                android:id="@+id/btn_save"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_43"
                 android:background="@drawable/bg_edit"
@@ -239,6 +224,7 @@
                 android:textColor="@color/blue"/>
 
             <Button
+                android:id="@+id/btn_cancel"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_43"
                 android:background="@drawable/bg_edit"
@@ -249,8 +235,5 @@
                 android:textColor="@color/blue"/>
             
         </LinearLayout>
-
-
     </LinearLayout>
-
 </ScrollView>

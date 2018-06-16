@@ -60,6 +60,8 @@ public class ProgressDialog extends Dialog{
         progressBar.getIndeterminateDrawable()
                 .setColorFilter(ContextCompat.getColor(mContext, R.color.blue),
                         PorterDuff.Mode.MULTIPLY);
+
+        setCanceledOnTouchOutside(false);
     }
 
     public void setMessage(String message){

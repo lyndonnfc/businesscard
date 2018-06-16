@@ -1,5 +1,6 @@
 package com.nfc.lyndon.businesscard.ui.fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -46,10 +47,13 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * 名片列表
  */
+@RuntimePermissions
 public class CardListFragment extends BaseFragment<CardListPresenter, CardModel> implements
         BaseQuickAdapter.OnItemClickListener, CardListContract.CardListView,
         PictureSelectorDialog.OnDialogClickListener {
@@ -172,15 +176,27 @@ public class CardListFragment extends BaseFragment<CardListPresenter, CardModel>
 
     @Override
     public void camera() {
-        path = mContext.getExternalCacheDir() + File.separator + "card.png";
-        AppUtils.openCameraPage(mContext, this, path);
+        CardListFragmentPermissionsDispatcher.takePhotoWithPermissionCheck(this);
     }
 
     @Override
     public void gallery() {
+        CardListFragmentPermissionsDispatcher.albumWithPermissionCheck(this);
+    }
+
+    @NeedsPermission({Manifest.permission.CAMERA,
+            Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    public void takePhoto() {
+        path = mContext.getExternalCacheDir() + File.separator + "card.png";
+        AppUtils.openCameraPage(mContext, this, path);
+    }
+
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    public void album() {
         path = mContext.getExternalCacheDir() + File.separator + "card.png";
         AppUtils.openAlbumPage(this);
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, final Intent data) {
@@ -199,7 +215,6 @@ public class CardListFragment extends BaseFragment<CardListPresenter, CardModel>
                 case Constants.ALBUM_REQUEST_CODE:
                     if (data != null && data.getData() != null) {
                         final Uri uri = data.getData();
-                        showDialog("正在识别...");
                         new Thread(new Runnable() {
                             @Override
                             public void run() {

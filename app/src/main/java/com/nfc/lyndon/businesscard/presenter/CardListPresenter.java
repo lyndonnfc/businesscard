@@ -1,6 +1,8 @@
 package com.nfc.lyndon.businesscard.presenter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.JsonReader;
@@ -16,13 +18,17 @@ import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
 import com.lzy.okgo.request.base.Request;
 import com.nfc.lyndon.businesscard.R;
+import com.nfc.lyndon.businesscard.app.Constants;
 import com.nfc.lyndon.businesscard.base.BaseResponse;
 import com.nfc.lyndon.businesscard.contract.CardListContract;
 import com.nfc.lyndon.businesscard.contract.LoginContract;
+import com.nfc.lyndon.businesscard.entity.CardDetailEntity;
 import com.nfc.lyndon.businesscard.entity.CardEntity;
 import com.nfc.lyndon.businesscard.entity.CardListEntity;
 import com.nfc.lyndon.businesscard.model.CardModel;
 import com.nfc.lyndon.businesscard.ui.activity.CardDetailActivity;
+import com.nfc.lyndon.businesscard.ui.activity.EditActivity;
+import com.nfc.lyndon.businesscard.ui.activity.ResultActivity;
 import com.nfc.lyndon.businesscard.ui.adapter.CardAdapter;
 import com.nfc.lyndon.businesscard.util.ScreenUtils;
 import com.nfc.lyndon.businesscard.util.ToastUtils;
@@ -39,6 +45,8 @@ public class CardListPresenter extends CardListContract.CardListPresenter {
 
     private static final int HANDLER_GET_CARD_LIST_SUCCESS = 1;
     private static final int HANDLER_GET_CARD_LIST_FAILED = 2;
+    private static final int HANDLER_GET_RESULT_SUCCESS = 3;
+    private static final int HANDLER_FAILED = 4;
 
     private List<CardEntity> mData;
     private Context mContext;
@@ -58,6 +66,18 @@ public class CardListPresenter extends CardListContract.CardListPresenter {
                     }
                     break;
                 case HANDLER_GET_CARD_LIST_FAILED:
+                    ToastUtils.toastShort((String) msg.obj);
+                    break;
+                case HANDLER_GET_RESULT_SUCCESS:
+                    CardEntity cardEntity = (CardEntity) message.obj;
+                    Intent intent = new Intent(mContext, EditActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean("isCreate", true);
+                    bundle.putSerializable("cardInfo", cardEntity);
+                    intent.putExtras(bundle);
+                    mContext.startActivity(intent);
+                    break;
+                case HANDLER_FAILED:
                     ToastUtils.toastShort((String) msg.obj);
                     break;
             }
@@ -104,7 +124,7 @@ public class CardListPresenter extends CardListContract.CardListPresenter {
                 super.onError(response);
                 mView.hidLoading();
                 message = new Message();
-                message.what = HANDLER_GET_CARD_LIST_SUCCESS;
+                message.what = HANDLER_GET_CARD_LIST_FAILED;
                 message.obj = response.getException().getMessage();
                 mHandler.sendMessage(message);
             }
@@ -119,22 +139,44 @@ public class CardListPresenter extends CardListContract.CardListPresenter {
 
     @Override
     public void uploadCardFile(File file) {
+        final CardListContract.CardListView mView = getView();
         mModel.uploadCardFile(file, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
-                getView().hidLoading();
+                mView.hidLoading();
+                BaseResponse<CardDetailEntity> baseResponse = JSON.parseObject(response.body(),
+                        new TypeReference<BaseResponse<CardDetailEntity>>(){});
+                if (baseResponse != null && baseResponse.getStat() == Constants.SUCCESS){
+                    if (baseResponse.getResult() != null &&
+                            baseResponse.getResult().getNfcBusinessCardInfo() != null){
+                        message = new Message();
+                        message.what = HANDLER_GET_RESULT_SUCCESS;
+                        message.obj = baseResponse.getResult().getNfcBusinessCardInfo();
+                        mHandler.sendMessage(message);
+                    }
+                } else {
+                    if (baseResponse != null){
+                        message = new Message();
+                        message.what = HANDLER_FAILED;
+                        message.obj = baseResponse.getMsg();
+                        mHandler.sendMessage(message);
+                    }
+                }
             }
 
             @Override
             public void onError(Response<String> response) {
                 super.onError(response);
-                getView().hidLoading();
+                mView.hidLoading();
+                message = new Message();
+                message.what = HANDLER_FAILED;
+                message.obj = response.getException().getMessage();
+                mHandler.sendMessage(message);
             }
-
             @Override
             public void onStart(Request<String, ? extends Request> request) {
                 super.onStart(request);
-                getView().showLoading("正在识别...");
+                mView.showLoading("正在识别...");
             }
         });
     }

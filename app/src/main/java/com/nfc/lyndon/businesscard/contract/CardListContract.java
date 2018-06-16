@@ -4,6 +4,7 @@ import com.lzy.okgo.callback.StringCallback;
 import com.nfc.lyndon.businesscard.base.BaseModel;
 import com.nfc.lyndon.businesscard.base.BasePresenter;
 import com.nfc.lyndon.businesscard.base.BaseView;
+import com.nfc.lyndon.businesscard.entity.CardDetailEntity;
 import com.nfc.lyndon.businesscard.entity.CardEntity;
 import com.nfc.lyndon.businesscard.model.CardModel;
 

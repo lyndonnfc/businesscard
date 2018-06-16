@@ -94,8 +94,8 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
             isSelf = bundle.getBoolean("isSelf");
             if (!isCreate){
                 cardId = bundle.getLong("cardId");
-                cardEntity = (CardEntity) bundle.getSerializable("cardInfo");
             }
+            cardEntity = (CardEntity) bundle.getSerializable("cardInfo");
         }
         Glide.with(mContext)
                 .load(R.drawable.img_avatar_bg)

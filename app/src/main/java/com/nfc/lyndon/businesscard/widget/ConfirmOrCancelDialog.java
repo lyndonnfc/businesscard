@@ -57,6 +57,8 @@ public class ConfirmOrCancelDialog extends Dialog implements View.OnClickListene
 
         tvConfirm.setOnClickListener(this);
         tvCancel.setOnClickListener(this);
+
+        setCanceledOnTouchOutside(false);
     }
 
     @Override
