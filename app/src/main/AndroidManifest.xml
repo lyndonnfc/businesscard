@@ -46,7 +46,8 @@
         <activity
             android:name=".ui.activity.MainActivity"
             android:configChanges="keyboardHidden|orientation"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
+            android:launchMode="singleTop"/>
         <activity android:name=".ui.activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
