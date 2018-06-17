@@ -21,6 +21,8 @@ import com.nfc.lyndon.businesscard.manager.PreferenceManager;
 import com.nfc.lyndon.businesscard.model.EditModel;
 import com.nfc.lyndon.businesscard.presenter.EditPresenter;
 import com.nfc.lyndon.businesscard.util.AppUtils;
+import com.nfc.lyndon.businesscard.util.CheckUtils;
+import com.nfc.lyndon.businesscard.util.StringUtils;
 import com.nfc.lyndon.businesscard.util.ToastUtils;
 import com.nfc.lyndon.businesscard.widget.PictureSelectorDialog;
 import com.nfc.lyndon.businesscard.widget.ProgressDialog;
@@ -151,11 +153,11 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
                 } else if (TextUtils.isEmpty(position)){
                     ToastUtils.toastShort("请输入职位");
                     return;
-                } else if (TextUtils.isEmpty(mobile)){
-                    ToastUtils.toastShort("请输入电话");
+                } else if (!StringUtils.isMobileNo(mobile)){
+                    ToastUtils.toastShort("请输入正确的手机号");
                     return;
-                } else if (TextUtils.isEmpty(email)){
-                    ToastUtils.toastShort("请输入邮箱");
+                } else if (!CheckUtils.isEmail(email)){
+                    ToastUtils.toastShort("请输入正确的邮箱");
                     return;
                 } else if (TextUtils.isEmpty(address)){
                     ToastUtils.toastShort("请输入地址");

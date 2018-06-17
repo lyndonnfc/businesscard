@@ -3,6 +3,7 @@ package com.nfc.lyndon.businesscard.ui.activity;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
 import android.os.Bundle;
@@ -90,7 +91,8 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
         return new DetailModel();
     }
 
-    @OnClick({R.id.tv_share, R.id.tv_edit, R.id.tv_trans_nfc, R.id.tv_delete})
+    @OnClick({R.id.tv_share, R.id.tv_edit, R.id.tv_trans_nfc, R.id.tv_delete,
+            R.id.tv_mobile, R.id.tv_email})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_share:
@@ -133,6 +135,13 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
                 dialog.show();
                 dialog.setMessage("确定要删除此名片吗");
                 break;
+            case R.id.tv_mobile:
+                CardDetailActivityPermissionsDispatcher
+                        .dialPhoneWithPermissionCheck(this, cardEntity.getPhone());
+                break;
+            case R.id.tv_email:
+                sendEMail(cardEntity.getEmail());
+                break;
         }
     }
 
@@ -167,6 +176,7 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
         tvName.setText(cardEntity.getRealName());
         tvPosition.setText(cardEntity.getPosition());
         tvCompany.setText(cardEntity.getCompanyName());
+        tvCompanyEn.setText(cardEntity.getEnglishCompanyName());
         tvMobile.setText(cardEntity.getPhone());
         tvDepartment.setText(cardEntity.getDepartment());
         tvEmail.setText(cardEntity.getEmail());
@@ -177,5 +187,25 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
     protected void onResume() {
         super.onResume();
         mPresenter.requestDetail(id);
+    }
+
+    @NeedsPermission(Manifest.permission.CALL_PHONE)
+    public void dialPhone(String phoneNum) {
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        Uri data = Uri.parse("tel:" + phoneNum);
+        intent.setData(data);
+        startActivity(intent);
+    }
+
+    /**
+     * 发送邮件
+     * @param mailAdress
+     */
+    public void sendEMail( String mailAdress) {
+        Uri uri = Uri.parse("mailto:"+mailAdress);
+        Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
+        intent.putExtra(Intent.EXTRA_EMAIL, PreferenceManager.getInstance()
+                .getString(PreferenceManager.EMAIL));
+        startActivity(Intent.createChooser(intent, "请选择发送方式"));
     }
 }

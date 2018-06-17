@@ -7,21 +7,22 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.content.FileProvider;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.text.TextUtils;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.nfc.lyndon.businesscard.R;
 import com.nfc.lyndon.businesscard.app.Constants;
@@ -36,17 +37,17 @@ import com.nfc.lyndon.businesscard.ui.adapter.CardAdapter;
 import com.nfc.lyndon.businesscard.util.AppUtils;
 import com.nfc.lyndon.businesscard.util.BitmapUtils;
 import com.nfc.lyndon.businesscard.util.ScreenUtils;
+import com.nfc.lyndon.businesscard.util.ToastUtils;
 import com.nfc.lyndon.businesscard.widget.PictureSelectorDialog;
-import com.nfc.lyndon.businesscard.widget.ProgressDialog;
 
 import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
@@ -56,9 +57,7 @@ import permissions.dispatcher.RuntimePermissions;
 @RuntimePermissions
 public class CardListFragment extends BaseFragment<CardListPresenter, CardModel> implements
         BaseQuickAdapter.OnItemClickListener, CardListContract.CardListView,
-        PictureSelectorDialog.OnDialogClickListener {
-
-    private static final int REQUEST_CREATE_CARD = 1;
+        PictureSelectorDialog.OnDialogClickListener, TextView.OnEditorActionListener {
 
     @BindView(R.id.et_search)
     EditText etSearch;
@@ -72,6 +71,11 @@ public class CardListFragment extends BaseFragment<CardListPresenter, CardModel>
     ImageView ivInput;
     @BindView(R.id.lay_add_card)
     ConstraintLayout layAddCard;
+    @BindView(R.id.iv_flow_input)
+    ImageView ivFlowInput;
+    @BindView(R.id.iv_flow_camera)
+    ImageView ivFlowCamera;
+    Unbinder unbinder;
 
     private String keyword = "";
 
@@ -80,6 +84,8 @@ public class CardListFragment extends BaseFragment<CardListPresenter, CardModel>
     private String path;
 
     private Bitmap bitmap;
+
+    private PictureSelectorDialog dialog;
 
     @Override
     protected int getContentId() {
@@ -96,6 +102,8 @@ public class CardListFragment extends BaseFragment<CardListPresenter, CardModel>
         initAdapter();
         mAdapter.setOnItemClickListener(this);
         rvList.setAdapter(mAdapter);
+
+        etSearch.setOnEditorActionListener(this);
     }
 
     @Override
@@ -126,22 +134,25 @@ public class CardListFragment extends BaseFragment<CardListPresenter, CardModel>
         return new CardModel();
     }
 
-    @OnClick({R.id.iv_search, R.id.iv_camera, R.id.iv_input})
+    @OnClick({R.id.iv_search, R.id.iv_camera, R.id.iv_input,
+            R.id.iv_flow_input, R.id.iv_flow_camera})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_search:
                 keyword = etSearch.getText().toString().trim();
                 mPresenter.requestCardList(PreferenceManager.getInstance().getLong(PreferenceManager.UID), keyword);
                 break;
-            case R.id.iv_camera:
-                PictureSelectorDialog dialog = new PictureSelectorDialog(mContext, R.style.transparent_dialog);
-                dialog.setOnDialogClickListener(this);
-                dialog.show();
-                break;
             case R.id.iv_input:
+            case R.id.iv_flow_input:
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("isCreate", true);
                 EditActivity.startActivity(mContext, bundle);
+                break;
+            case R.id.iv_flow_camera:
+            case R.id.iv_camera:
+                dialog = new PictureSelectorDialog(mContext, R.style.transparent_dialog);
+                dialog.setOnDialogClickListener(this);
+                dialog.show();
                 break;
         }
     }
@@ -165,12 +176,16 @@ public class CardListFragment extends BaseFragment<CardListPresenter, CardModel>
     public void showAddView() {
         layAddCard.setVisibility(View.VISIBLE);
         rvList.setVisibility(View.GONE);
+        ivFlowInput.setVisibility(View.GONE);
+        ivFlowCamera.setVisibility(View.GONE);
     }
 
     @Override
     public void updateView(List<CardEntity> data) {
         layAddCard.setVisibility(View.GONE);
         rvList.setVisibility(View.VISIBLE);
+        ivFlowCamera.setVisibility(View.VISIBLE);
+        ivFlowInput.setVisibility(View.VISIBLE);
         mAdapter.setNewData(data);
     }
 
@@ -230,6 +245,7 @@ public class CardListFragment extends BaseFragment<CardListPresenter, CardModel>
 
     /**
      * 获取图片真实路径
+     *
      * @param contentUri uri
      * @return
      */
@@ -237,8 +253,8 @@ public class CardListFragment extends BaseFragment<CardListPresenter, CardModel>
         String res = null;
         String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = mContext.getContentResolver().query(contentUri, proj, null, null, null);
-        if (cursor != null){
-            if (cursor.moveToFirst()){
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
                 int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
                 res = cursor.getString(column_index);
             }
@@ -251,5 +267,33 @@ public class CardListFragment extends BaseFragment<CardListPresenter, CardModel>
     public void onDestroy() {
         super.onDestroy();
         bitmap = null;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: inflate a fragment view
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        unbinder = ButterKnife.bind(this, rootView);
+        return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+    @Override
+    public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+        if (i == EditorInfo.IME_ACTION_SEARCH) {
+            keyword = etSearch.getText().toString().trim();
+            if (TextUtils.isEmpty(keyword)) {
+                ToastUtils.toastShort("请先输入要搜索的内容");
+                return false;
+            }
+            mPresenter.requestCardList(PreferenceManager.getInstance()
+                    .getLong(PreferenceManager.UID), keyword);
+        }
+        return false;
     }
 }

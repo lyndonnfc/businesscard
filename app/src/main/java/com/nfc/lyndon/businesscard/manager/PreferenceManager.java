@@ -16,6 +16,8 @@ public class PreferenceManager {
 
     public static final String UID = "uid";
 
+    public static final String EMAIL = "email";
+
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 

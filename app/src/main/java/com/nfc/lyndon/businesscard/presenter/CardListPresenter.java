@@ -58,7 +58,7 @@ public class CardListPresenter extends CardListContract.CardListPresenter {
                 case HANDLER_GET_CARD_LIST_SUCCESS:
                     BaseResponse<CardListEntity> baseResponse = (BaseResponse<CardListEntity>) msg.obj;
                     if (baseResponse.getResult() == null) {
-                        getView().showAddView();
+                        ToastUtils.toastShort("没有您要查找的名片");
                     } else if (baseResponse.getResult() != null &&
                             baseResponse.getResult().getCardInfoList() != null) {
                         mData = baseResponse.getResult().getCardInfoList();
@@ -112,7 +112,7 @@ public class CardListPresenter extends CardListContract.CardListPresenter {
                 } else {
                     if (baseResponse != null) {
                         message = new Message();
-                        message.what = HANDLER_GET_CARD_LIST_SUCCESS;
+                        message.what = HANDLER_FAILED;
                         message.obj = baseResponse.getMsg();
                         mHandler.sendMessage(message);
                     }
@@ -145,17 +145,18 @@ public class CardListPresenter extends CardListContract.CardListPresenter {
             public void onSuccess(Response<String> response) {
                 mView.hidLoading();
                 BaseResponse<CardDetailEntity> baseResponse = JSON.parseObject(response.body(),
-                        new TypeReference<BaseResponse<CardDetailEntity>>(){});
-                if (baseResponse != null && baseResponse.getStat() == Constants.SUCCESS){
+                        new TypeReference<BaseResponse<CardDetailEntity>>() {
+                        });
+                if (baseResponse != null && baseResponse.getStat() == Constants.SUCCESS) {
                     if (baseResponse.getResult() != null &&
-                            baseResponse.getResult().getNfcBusinessCardInfo() != null){
+                            baseResponse.getResult().getNfcBusinessCardInfo() != null) {
                         message = new Message();
                         message.what = HANDLER_GET_RESULT_SUCCESS;
                         message.obj = baseResponse.getResult().getNfcBusinessCardInfo();
                         mHandler.sendMessage(message);
                     }
                 } else {
-                    if (baseResponse != null){
+                    if (baseResponse != null) {
                         message = new Message();
                         message.what = HANDLER_FAILED;
                         message.obj = baseResponse.getMsg();
@@ -173,6 +174,7 @@ public class CardListPresenter extends CardListContract.CardListPresenter {
                 message.obj = response.getException().getMessage();
                 mHandler.sendMessage(message);
             }
+
             @Override
             public void onStart(Request<String, ? extends Request> request) {
                 super.onStart(request);
