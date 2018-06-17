@@ -3,12 +3,15 @@ package com.nfc.lyndon.businesscard.ui.activity;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.nfc.NfcAdapter;
+import android.nfc.NfcManager;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.nfc.lyndon.businesscard.R;
@@ -19,6 +22,7 @@ import com.nfc.lyndon.businesscard.manager.PreferenceManager;
 import com.nfc.lyndon.businesscard.model.DetailModel;
 import com.nfc.lyndon.businesscard.presenter.DetailPresenter;
 import com.nfc.lyndon.businesscard.util.BitmapUtils;
+import com.nfc.lyndon.businesscard.util.ToastUtils;
 import com.nfc.lyndon.businesscard.widget.ConfirmOrCancelDialog;
 
 import java.io.Serializable;
@@ -100,7 +104,22 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
                 mPresenter.toEdit(bundle);
                 break;
             case R.id.tv_trans_nfc:
-                mPresenter.toTransfer();
+                NfcManager manager = (NfcManager) getSystemService(Context.NFC_SERVICE);
+                NfcAdapter nfcAdapter;
+                if (manager != null) {
+                    nfcAdapter = manager.getDefaultAdapter();
+                } else {
+                    ToastUtils.toastShort("此手机不支持NFC功能");
+                    return;
+                }
+                if (nfcAdapter == null || !nfcAdapter.isEnabled()) {
+                    ToastUtils.toastShort("请打开NFC");
+                    return;
+                }
+                if (cardEntity != null){
+                    String content = JSON.toJSONString(cardEntity);
+                    mPresenter.toTransfer(content);
+                }
                 break;
             case R.id.tv_delete:
                 ConfirmOrCancelDialog dialog = new ConfirmOrCancelDialog(mContext,

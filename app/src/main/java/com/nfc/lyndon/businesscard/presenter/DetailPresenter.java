@@ -61,8 +61,9 @@ public class DetailPresenter extends DetailContract.DetailPresenter{
         EditActivity.startActivity(mContext, bundle);
     }
 
-    public void toTransfer(){
+    public void toTransfer(String content){
         Intent intent = new Intent(mContext, TransferActivity.class);
+        intent.putExtra("content", content);
         mContext.startActivity(intent);
     }
 
