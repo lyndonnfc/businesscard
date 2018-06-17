@@ -1,12 +1,20 @@
 package com.nfc.lyndon.businesscard.ui.fragment;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
+import android.nfc.NfcAdapter;
+import android.nfc.NfcManager;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.nfc.lyndon.businesscard.R;
@@ -16,13 +24,20 @@ import com.nfc.lyndon.businesscard.entity.CardEntity;
 import com.nfc.lyndon.businesscard.manager.PreferenceManager;
 import com.nfc.lyndon.businesscard.model.SendCardModel;
 import com.nfc.lyndon.businesscard.presenter.SendCardPresenter;
+import com.nfc.lyndon.businesscard.util.BitmapUtils;
+import com.nfc.lyndon.businesscard.util.ToastUtils;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * 递名片页面
  */
+@RuntimePermissions
 public class SendCardFragment extends BaseFragment<SendCardPresenter, SendCardModel> implements
         SendCardContract.SendCardView {
 
@@ -52,6 +67,9 @@ public class SendCardFragment extends BaseFragment<SendCardPresenter, SendCardMo
     RelativeLayout layCreate;
     @BindView(R.id.tv_create_desc)
     TextView tvCreateDesc;
+    @BindView(R.id.lay_top)
+    ConstraintLayout layTop;
+    Unbinder unbinder;
 
     private CardEntity cardEntity;
 
@@ -84,9 +102,25 @@ public class SendCardFragment extends BaseFragment<SendCardPresenter, SendCardMo
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_trans_nfc:
-                mPresenter.toTransfer();
+                NfcManager manager = (NfcManager) mContext.getSystemService(Context.NFC_SERVICE);
+                NfcAdapter nfcAdapter;
+                if (manager != null) {
+                    nfcAdapter = manager.getDefaultAdapter();
+                } else {
+                    ToastUtils.toastShort("此手机不支持NFC功能");
+                    return;
+                }
+                if (nfcAdapter == null || !nfcAdapter.isEnabled()) {
+                    ToastUtils.toastShort("请打开NFC");
+                    return;
+                }
+                if (cardEntity != null) {
+                    String content = JSON.toJSONString(cardEntity);
+                    mPresenter.toTransfer(content);
+                }
                 break;
             case R.id.tv_share:
+                SendCardFragmentPermissionsDispatcher.shareWithPermissionCheck(this, layTop);
                 break;
             case R.id.tv_edit:
                 Bundle bundle = new Bundle();
@@ -139,5 +173,28 @@ public class SendCardFragment extends BaseFragment<SendCardPresenter, SendCardMo
     public void onResume() {
         super.onResume();
         mPresenter.requestDetail(PreferenceManager.getInstance().getLong(PreferenceManager.UID));
+    }
+
+    @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE})
+    public void share(View v) {
+        Intent imageIntent = new Intent(Intent.ACTION_SEND);
+        imageIntent.setType("image/jpeg");
+        imageIntent.putExtra(Intent.EXTRA_STREAM,
+                BitmapUtils.getUri(v, mContext));
+        startActivity(Intent.createChooser(imageIntent, "分享"));
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: inflate a fragment view
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        unbinder = ButterKnife.bind(this, rootView);
+        return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }

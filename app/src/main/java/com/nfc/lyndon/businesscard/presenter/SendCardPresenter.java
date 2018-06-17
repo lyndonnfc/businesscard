@@ -61,8 +61,9 @@ public class SendCardPresenter extends SendCardContract.SendCardPresenter {
     /**
      * nfc递名片
      */
-    public void toTransfer(){
+    public void toTransfer(String content){
         Intent intent = new Intent(mContext, TransferActivity.class);
+        intent.putExtra("content", content);
         mContext.startActivity(intent);
     }
 

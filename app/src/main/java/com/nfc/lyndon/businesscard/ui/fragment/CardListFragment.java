@@ -109,7 +109,7 @@ public class CardListFragment extends BaseFragment<CardListPresenter, CardModel>
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.requestCardList(PreferenceManager.getInstance().getLong(PreferenceManager.UID), keyword);
+        mPresenter.requestCardList(PreferenceManager.getInstance().getLong(PreferenceManager.UID), "");
     }
 
     public void initAdapter() {

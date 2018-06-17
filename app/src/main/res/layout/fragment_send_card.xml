@@ -7,6 +7,11 @@
     android:background="@drawable/bg_welcome"
     tools:context=".ui.fragment.SendCardFragment">
 
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/lay_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
     <RelativeLayout
         android:id="@+id/lay_base"
         android:layout_width="match_parent"
@@ -75,12 +80,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    </android.support.constraint.ConstraintLayout>
+
     <TextView
         android:id="@+id/tv_trans_nfc"
         style="@style/TextViewCommonStyle"
         android:drawableStart="@drawable/icon_deliver"
         android:text="@string/send_card_use_nfc"
-        app:layout_constraintTop_toBottomOf="@id/lay_base"
+        app:layout_constraintTop_toBottomOf="@id/lay_top"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 

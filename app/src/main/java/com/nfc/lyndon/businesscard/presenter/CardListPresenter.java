@@ -58,7 +58,7 @@ public class CardListPresenter extends CardListContract.CardListPresenter {
                 case HANDLER_GET_CARD_LIST_SUCCESS:
                     BaseResponse<CardListEntity> baseResponse = (BaseResponse<CardListEntity>) msg.obj;
                     if (baseResponse.getResult() == null) {
-                        ToastUtils.toastShort("没有您要查找的名片");
+                        getView().showAddView();
                     } else if (baseResponse.getResult() != null &&
                             baseResponse.getResult().getCardInfoList() != null) {
                         mData = baseResponse.getResult().getCardInfoList();
