@@ -11,6 +11,7 @@ import android.nfc.NfcManager;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.nfc.lyndon.businesscard.R;
@@ -98,12 +99,21 @@ public class TransferActivity extends MvpActivity<TransferPresenter, TransferMod
         if (TextUtils.isEmpty(content))
             content = "传输名片失败";
         return new NdefMessage(
-                new NdefRecord[]{createTextRecord(content)});
+                new NdefRecord[]{ NdefRecord
+                        .createApplicationRecord("com.nfc.lyndon.businesscard"),
+                        createTextRecord(content)});
     }
 
     @Override
     public void onNdefPushComplete(NfcEvent nfcEvent) {
+        ToastUtils.toastShort("传输完毕");
+        finish();
+    }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        processIntent(intent);
     }
 
     /**
