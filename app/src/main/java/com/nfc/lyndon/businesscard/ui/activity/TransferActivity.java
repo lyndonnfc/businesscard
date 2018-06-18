@@ -104,7 +104,6 @@ public class TransferActivity extends MvpActivity<TransferPresenter, TransferMod
             content = "传输名片失败";
         return new NdefMessage(
                 new NdefRecord[]{createTextRecord(content)});
-        //NdefRecord.createApplicationRecord("com.nfc.lyndon.businesscard"),
     }
 
     @Override
@@ -117,6 +116,7 @@ public class TransferActivity extends MvpActivity<TransferPresenter, TransferMod
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         processIntent(intent);
+
     }
 
     /**

@@ -45,22 +45,6 @@ public abstract class MvpActivity<T extends BasePresenter, M extends BaseModel> 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Parcelable[] rawMsgs = intent
-                .getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-
-        NdefMessage msg = (NdefMessage) rawMsgs[0];
-        if (msg != null && msg.getRecords().length > 0){
-            TextRecord textRecord = TextRecord.parse(msg.getRecords()[0]);
-            if (textRecord != null ){
-                String text = textRecord.getText();
-                CardEntity cardEntity = (CardEntity) JSON.parse(text);
-                Intent i = new Intent(mContext, EditActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putBoolean("isCreate", true);
-                bundle.putSerializable("cardInfo", cardEntity);
-                mContext.startActivity(intent);
-            }
-        }
     }
 
     @Override
@@ -77,14 +61,14 @@ public abstract class MvpActivity<T extends BasePresenter, M extends BaseModel> 
 
     protected abstract M initModel();
 
-    public void showDialog(String message){
+    public void showDialog(String message) {
         dialog = new ProgressDialog(mContext, R.style.transparent_dialog);
         dialog.show();
         dialog.setMessage(message);
     }
 
-    public void hidDialog(){
-        if (dialog != null && dialog.isShowing()){
+    public void hidDialog() {
+        if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
         }
     }
