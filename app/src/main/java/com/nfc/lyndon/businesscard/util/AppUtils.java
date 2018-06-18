@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -197,44 +198,37 @@ public class AppUtils {
     }
 
     /**
-     * 剪裁
-     *
-     * @param context
-     * @param uri
+     * 调用系统照片的裁剪功能，修改编辑头像的选择模式(适配Android7.0)
      */
-    public static void corp(Context context, Uri uri, String path) {
-        try {
-            File file = new File(path);
-            if (file.exists()) {
-                boolean d = file.delete();
-            }
-            boolean c = file.createNewFile();
-
-            Uri outputUri = Uri.fromFile(file);
-
-            Intent intent = new Intent("com.android.camera.action.CROP");
-            intent.putExtra("crop", true);
-            // aspectX,aspectY 是宽高的比例，这里设置正方形
-            intent.putExtra("aspectX", 1);
-            intent.putExtra("aspectY", 1);
-            //设置要裁剪的宽高
-            intent.putExtra("outputX", 500); //200dp
-            intent.putExtra("outputY", 500);
-            intent.putExtra("scale", true);
-            //如果图片过大，会导致oom，这里设置为false
-            intent.putExtra("return-data", false);
-            if (uri != null) {
-                intent.setDataAndType(uri, "image/*");
-            }
-            if (outputUri != null) {
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, outputUri);
-            }
-            intent.putExtra("noFaceDetection", true);
-            //压缩图片
-            intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
-            ((Activity) context).startActivityForResult(intent, Constants.CROP_REQUEST_CODE);
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static Intent invokeSystemCrop(Uri uri, String path) {
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            //添加这一句表示对目标应用临时授权该Uri所代表的文件
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }
+        intent.setDataAndType(uri, "image/*");
+        // crop为true是设置在开启的intent中设置显示的view可以剪裁
+        intent.putExtra("crop", "true");
+
+        intent.putExtra("scale", true);
+
+        // aspectX aspectY 是宽高的比例
+        intent.putExtra("aspectX", 1);
+        intent.putExtra("aspectY", 1);
+
+        // outputX,outputY 是剪裁图片的宽高
+        intent.putExtra("outputX", 300);
+        intent.putExtra("outputY", 300);
+        intent.putExtra("return-data", false);
+        intent.putExtra("noFaceDetection", true);
+
+        File out = new File(path);
+        if (!out.getParentFile().exists()) {
+            out.getParentFile().mkdirs();
+        }
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(out));
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+
+        return intent;
     }
 }
