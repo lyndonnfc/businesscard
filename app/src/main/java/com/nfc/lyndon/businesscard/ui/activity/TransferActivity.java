@@ -115,8 +115,7 @@ public class TransferActivity extends MvpActivity<TransferPresenter, TransferMod
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        processIntent(intent);
-
+        //processIntent(intent);
     }
 
     /**
