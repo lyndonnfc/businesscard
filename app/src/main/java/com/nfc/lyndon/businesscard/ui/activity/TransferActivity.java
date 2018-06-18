@@ -1,5 +1,6 @@
 package com.nfc.lyndon.businesscard.ui.activity;
 
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
 import android.nfc.NfcManager;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -27,8 +29,10 @@ import java.util.Locale;
 /**
  * 正在传输页面
  */
+@SuppressLint("NewApi")
 public class TransferActivity extends MvpActivity<TransferPresenter, TransferModel> implements
-        NfcAdapter.CreateNdefMessageCallback, NfcAdapter.OnNdefPushCompleteCallback {
+        NfcAdapter.CreateNdefMessageCallback, NfcAdapter.OnNdefPushCompleteCallback,
+        NfcAdapter.ReaderCallback{
 
     private NfcAdapter mNfcAdapter;
 
@@ -99,9 +103,8 @@ public class TransferActivity extends MvpActivity<TransferPresenter, TransferMod
         if (TextUtils.isEmpty(content))
             content = "传输名片失败";
         return new NdefMessage(
-                new NdefRecord[]{ NdefRecord
-                        .createApplicationRecord("com.nfc.lyndon.businesscard"),
-                        createTextRecord(content)});
+                new NdefRecord[]{createTextRecord(content)});
+        //NdefRecord.createApplicationRecord("com.nfc.lyndon.businesscard"),
     }
 
     @Override
@@ -143,5 +146,10 @@ public class TransferActivity extends MvpActivity<TransferPresenter, TransferMod
         NdefMessage msg = (NdefMessage) rawMsgs[0];
         String text = TextRecord.parse(msg.getRecords()[0]).getText();
         Toast.makeText(this, text, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onTagDiscovered(Tag tag) {
+        ToastUtils.toastShort("----------------------");
     }
 }

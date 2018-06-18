@@ -1,6 +1,7 @@
 package com.nfc.lyndon.businesscard.base;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
@@ -27,6 +28,10 @@ public abstract class MvpActivity<T extends BasePresenter, M extends BaseModel> 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent intent = new Intent();
+        intent.setAction("android.nfc.action.NDEF_DISCOVERED");
+        intent.addCategory("android.intent.category.DEFAULT");
 
         //内部获取第一个类型参数的真实类型  ，反射new出对象
         mPresenter = initPresenter();
