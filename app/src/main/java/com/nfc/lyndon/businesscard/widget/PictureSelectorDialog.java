@@ -53,7 +53,8 @@ public class PictureSelectorDialog extends Dialog implements View.OnClickListene
 
         tvCamera.setOnClickListener(this);
         tvGallery.setOnClickListener(this);
-//        setCanceledOnTouchOutside(false);
+
+        setCanceledOnTouchOutside(true);
     }
 
     @Override

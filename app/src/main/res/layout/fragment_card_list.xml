@@ -64,8 +64,8 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/bg_blue_circle"
-            android:src="@drawable/icon_compilecard"
-            android:padding="4dp"
+            android:src="@drawable/ic_pen"
+            android:padding="8dp"
             android:scaleType="centerInside"
             tools:ignore="ContentDescription" />
 
@@ -76,7 +76,7 @@
             android:layout_below="@id/iv_flow_input"
             android:layout_marginTop="@dimen/dp_10"
             android:background="@drawable/bg_blue_circle"
-            android:src="@drawable/icon_camera"
+            android:src="@drawable/ic_camera"
             android:padding="8dp"
             android:scaleType="centerInside"
             tools:ignore="ContentDescription" />
