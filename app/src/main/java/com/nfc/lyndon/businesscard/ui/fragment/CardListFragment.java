@@ -230,7 +230,7 @@ public class CardListFragment extends BaseFragment<CardListPresenter, CardModel>
                 case Constants.ALBUM_REQUEST_CODE:
                     if (data != null && data.getData() != null) {
                         final Uri uri = data.getData();
-                        final Bitmap bitmap = BitmapFactory.decodeFile(uri.getPath());
+                        final Bitmap bitmap = BitmapFactory.decodeFile(BitmapUtils.getImageAbsolutePath(mContext, uri));
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
@@ -242,6 +242,26 @@ public class CardListFragment extends BaseFragment<CardListPresenter, CardModel>
                     break;
             }
         }
+    }
+
+    /**
+     * 获取图片真实路径
+     *
+     * @param contentUri uri
+     * @return
+     */
+    public String getRealPathFromURI(Uri contentUri) {
+        String res = null;
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = mContext.getContentResolver().query(contentUri, proj, null, null, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                res = cursor.getString(column_index);
+            }
+            cursor.close();
+        }
+        return res;
     }
 
     @Override
