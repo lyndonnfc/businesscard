@@ -244,26 +244,6 @@ public class CardListFragment extends BaseFragment<CardListPresenter, CardModel>
         }
     }
 
-    /**
-     * 获取图片真实路径
-     *
-     * @param contentUri uri
-     * @return
-     */
-    public String getRealPathFromURI(Uri contentUri) {
-        String res = null;
-        String[] proj = {MediaStore.Images.Media.DATA};
-        Cursor cursor = mContext.getContentResolver().query(contentUri, proj, null, null, null);
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                res = cursor.getString(column_index);
-            }
-            cursor.close();
-        }
-        return res;
-    }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
