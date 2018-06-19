@@ -155,6 +155,7 @@ public class SendCardFragment extends BaseFragment<SendCardPresenter, SendCardMo
         tvName.setText(cardEntity.getRealName());
         tvPosition.setText(cardEntity.getPosition());
         tvCompany.setText(cardEntity.getCompanyName());
+        tvCompanyEn.setText(cardEntity.getEnglishCompanyName());
         PreferenceManager.getInstance().setString(PreferenceManager.EMAIL,
                 cardEntity.getEmail());
     }
