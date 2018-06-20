@@ -71,5 +71,9 @@
         <activity android:name=".ui.activity.TransferActivity"
             android:launchMode="singleTop"/>
         <activity android:name=".ui.activity.LoginActivity"/>
+        <activity
+            android:name=".ui.activity.CameraActivity"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" />
     </application>
 </manifest>

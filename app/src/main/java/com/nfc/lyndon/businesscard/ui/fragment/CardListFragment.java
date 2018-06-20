@@ -32,6 +32,7 @@ import com.nfc.lyndon.businesscard.entity.CardEntity;
 import com.nfc.lyndon.businesscard.manager.PreferenceManager;
 import com.nfc.lyndon.businesscard.model.CardModel;
 import com.nfc.lyndon.businesscard.presenter.CardListPresenter;
+import com.nfc.lyndon.businesscard.ui.activity.CameraActivity;
 import com.nfc.lyndon.businesscard.ui.activity.EditActivity;
 import com.nfc.lyndon.businesscard.ui.adapter.CardAdapter;
 import com.nfc.lyndon.businesscard.util.AppUtils;
@@ -202,8 +203,9 @@ public class CardListFragment extends BaseFragment<CardListPresenter, CardModel>
     @NeedsPermission({Manifest.permission.CAMERA,
             Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void takePhoto() {
-        path = mContext.getExternalCacheDir() + File.separator + "card.png";
-        AppUtils.openCameraPage(mContext, this, path);
+//        path = mContext.getExternalCacheDir() + File.separator + "card.png";
+//        AppUtils.openCameraPage(mContext, this, path);
+        CameraActivity.openCertificateCamera(getActivity(), CameraActivity.TYPE_IDCARD_FRONT);
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
