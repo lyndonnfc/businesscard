@@ -43,7 +43,6 @@ public class CardListPresenter extends CardListContract.CardListPresenter {
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case HANDLER_GET_CARD_LIST_SUCCESS:
-                    getView().hidLoading();
                     BaseResponse<CardListEntity> baseResponse = (BaseResponse<CardListEntity>) msg.obj;
                     if (baseResponse.getResult() == null) {
                         getView().showAddView();
@@ -121,7 +120,6 @@ public class CardListPresenter extends CardListContract.CardListPresenter {
             @Override
             public void onStart(Request<String, ? extends Request> request) {
                 super.onStart(request);
-                mView.showLoading("");
             }
         });
     }
@@ -165,7 +163,6 @@ public class CardListPresenter extends CardListContract.CardListPresenter {
             @Override
             public void onStart(Request<String, ? extends Request> request) {
                 super.onStart(request);
-                mView.showLoading("正在识别...");
             }
         });
     }

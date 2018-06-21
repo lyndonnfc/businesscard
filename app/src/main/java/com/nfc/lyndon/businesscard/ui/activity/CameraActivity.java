@@ -226,7 +226,6 @@ public class CameraActivity extends Activity implements View.OnClickListener, Ca
             if (data != null && data.getData() != null) {
                 final Uri uri = data.getData();
                 final Bitmap bitmap = BitmapFactory.decodeFile(BitmapUtils.getImageAbsolutePath(this, uri));
-
                 BitmapUtils.compressImage(bitmap, getCropFile().getAbsolutePath());
                 Intent intent = new Intent();
                 intent.putExtra("path", getCropFile().getPath());

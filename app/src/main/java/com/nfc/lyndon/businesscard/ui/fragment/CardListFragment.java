@@ -229,6 +229,7 @@ public class CardListFragment extends BaseFragment<CardListPresenter, CardModel>
                             ToastUtils.toastShort("文件不存在");
                             return;
                         }
+                        showDialog("正在识别...");
                         mPresenter.uploadCardFile(file);
                     }
                     break;
