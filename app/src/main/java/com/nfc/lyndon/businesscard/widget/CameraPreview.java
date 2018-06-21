@@ -1,5 +1,6 @@
 package com.nfc.lyndon.businesscard.widget;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -7,6 +8,7 @@ import android.hardware.Camera;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -150,6 +152,21 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int action = event.getAction();
+        if (event.getPointerCount() == 1 && action == MotionEvent.ACTION_DOWN){
+            float x = event.getX();
+            float y = event.getY();
+            if (listener != null){
+                listener.focus(x, y);
+                focus();
+            }
+        }
+        return true;
+    }
+
     /**
      * 开关闪光灯
      *
@@ -194,4 +211,14 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
+    private OnTouchListener listener;
+
+    public interface OnTouchListener{
+
+        void focus(float x, float y);
+    }
+
+    public void setListener(OnTouchListener listener) {
+        this.listener = listener;
+    }
 }

@@ -5,88 +5,120 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Point;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.nfc.lyndon.businesscard.R;
 
-/**
- * Created by Administrator on 2018/6/20.
- */
-
 @SuppressLint("AppCompatCustomView")
 public class FocusImageView extends ImageView {
-
+    public final static String TAG = "FocusImageView";
+    private static final int NO_ID = -1;
+    private int mFocusImg = NO_ID;
+    private int mFocusSucceedImg = NO_ID;
+    private int mFocusFailedImg = NO_ID;
     private Animation mAnimation;
     private Handler mHandler;
-    private int mFocusImg;
-    private int mFocusSucceedImg;
-    private int mFocusFailedImg;
 
     public FocusImageView(Context context) {
         super(context);
         mAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.focusview_show);
-        setVisibility(GONE);
+        setVisibility(View.GONE);
         mHandler = new Handler();
     }
 
-    public FocusImageView(Context context, @Nullable AttributeSet attrs) {
+
+    public FocusImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.focusview_show);
         mHandler = new Handler();
+
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FocusImageView);
-        mFocusImg = a.getResourceId(R.styleable.FocusImageView_focus_focusing_id, 0);
-        mFocusSucceedImg = a.getResourceId(R.styleable.FocusImageView_focus_success_id, 0);
-        mFocusFailedImg = a.getResourceId(R.styleable.FocusImageView_focus_fail_id, 0);
+        mFocusImg = a.getResourceId(R.styleable.FocusImageView_focus_focusing_id, NO_ID);
+        mFocusSucceedImg = a.getResourceId(R.styleable.FocusImageView_focus_success_id, NO_ID);
+        mFocusFailedImg = a.getResourceId(R.styleable.FocusImageView_focus_fail_id, NO_ID);
         a.recycle();
-        if((mFocusImg == 0) || (mFocusSucceedImg == 0) || (mFocusFailedImg == 0)) {
+
+        if (mFocusImg == NO_ID || mFocusSucceedImg == NO_ID || mFocusFailedImg == NO_ID)
             throw new RuntimeException("Animation is null");
-        }
     }
 
-    public void startFocus(Point p) {
-        if((mFocusImg == 0) || (mFocusSucceedImg == 0) || (mFocusFailedImg == 0)) {
+
+    /**
+     * 显示聚焦图案
+     */
+    public void startFocus(Point point) {
+        if (mFocusImg == NO_ID || mFocusSucceedImg == NO_ID || mFocusFailedImg == NO_ID)
             throw new RuntimeException("focus image is null");
-        }
-        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)getLayoutParams();
-        params.topMargin = (p.y - (getHeight() / 2));
-        params.leftMargin = (p.x - (getWidth() / 2));
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) getLayoutParams();
+        params.topMargin = point.y - getHeight() / 2;
+        params.leftMargin = point.x - getWidth() / 2;
         setLayoutParams(params);
-        setVisibility(VISIBLE);
+        setVisibility(View.VISIBLE);
         setImageResource(mFocusImg);
         startAnimation(mAnimation);
-        mHandler.postDelayed(runnable, 600);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setVisibility(View.GONE);
+            }
+        }, 3500);
     }
 
+
+    /**
+     * 聚焦成功回调
+     */
     public void onFocusSuccess() {
         setImageResource(mFocusSucceedImg);
-        mHandler.removeCallbacks(runnable, null);
-        mHandler.postDelayed(runnable, 600);
+        mHandler.removeCallbacks(null, null);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setVisibility(View.GONE);
+            }
+        }, 1000);
+
+
     }
 
+
+    /**
+     * 聚焦失败回调
+     */
     public void onFocusFailed() {
         setImageResource(mFocusFailedImg);
-        mHandler.removeCallbacks(runnable, null);
-        mHandler.postDelayed(runnable, 600);
+        mHandler.removeCallbacks(null, null);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setVisibility(View.GONE);
+            }
+        }, 1000);
     }
 
-    public void setFocusImg(int p1) {
-        mFocusImg = p1;
+
+    /**
+     * 设置开始聚焦时的图片
+     *
+     * @param focus
+     */
+    public void setFocusImg(int focus) {
+        this.mFocusImg = focus;
     }
 
-    public void setFocusSucceedImg(int p1) {
-        mFocusSucceedImg = p1;
+
+    /**
+     * 设置聚焦成功显示的图片
+     *
+     * @param focusSucceed
+     */
+    public void setFocusSucceedImg(int focusSucceed) {
+        this.mFocusSucceedImg = focusSucceed;
     }
-
-    Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            setVisibility(GONE);
-        }
-    };
-
 }

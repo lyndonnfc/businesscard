@@ -6,16 +6,20 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.hardware.Camera;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.nfc.lyndon.businesscard.R;
 import com.nfc.lyndon.businesscard.widget.CameraPreview;
+import com.nfc.lyndon.businesscard.widget.FocusImageView;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -26,7 +30,7 @@ import java.io.IOException;
 /**
  * 拍照界面
  */
-public class CameraActivity extends Activity implements View.OnClickListener {
+public class CameraActivity extends Activity implements View.OnClickListener, Camera.AutoFocusCallback {
 
     /**
      * 拍摄类型-身份证正面
@@ -71,6 +75,7 @@ public class CameraActivity extends Activity implements View.OnClickListener {
     }
 
     private CameraPreview cameraPreview;
+    private FocusImageView focusImageView;
     private View containerView;
     private ImageView cropView;
     private ImageView flashImageView;
@@ -104,7 +109,7 @@ public class CameraActivity extends Activity implements View.OnClickListener {
         cameraPreview.setLayoutParams(layoutParams);
 
         containerView = findViewById(R.id.camera_crop_container);
-        cropView = (ImageView) findViewById(R.id.camera_crop);
+        cropView = findViewById(R.id.camera_crop);
         if (type == TYPE_COMPANY_PORTRAIT) {
             float width = (int) (screenMinSize * 0.8);
             float height = (int) (width * 43.0f / 30.0f);
@@ -127,38 +132,34 @@ public class CameraActivity extends Activity implements View.OnClickListener {
             containerView.setLayoutParams(containerParams);
             cropView.setLayoutParams(cropParams);
         }
-        switch (type) {
-            case TYPE_IDCARD_FRONT:
-                cropView.setImageResource(R.drawable.camera_idcard_front);
-                break;
-            case TYPE_IDCARD_BACK:
-                cropView.setImageResource(R.drawable.camera_idcard_back);
-                break;
-            case TYPE_COMPANY_PORTRAIT:
-                cropView.setImageResource(R.drawable.camera_company);
-                break;
-            case TYPE_COMPANY_LANDSCAPE:
-                cropView.setImageResource(R.drawable.camera_company_landscape);
-                break;
-        }
 
-        flashImageView = (ImageView) findViewById(R.id.camera_flash);
+        flashImageView = findViewById(R.id.camera_flash);
         optionView = findViewById(R.id.camera_option);
         resultView = findViewById(R.id.camera_result);
+        focusImageView = findViewById(R.id.focusImageView);
         cameraPreview.setOnClickListener(this);
         findViewById(R.id.camera_close).setOnClickListener(this);
         findViewById(R.id.camera_take).setOnClickListener(this);
         flashImageView.setOnClickListener(this);
         findViewById(R.id.camera_result_ok).setOnClickListener(this);
         findViewById(R.id.camera_result_cancel).setOnClickListener(this);
+
+        cameraPreview.setListener(new CameraPreview.OnTouchListener() {
+            @Override
+            public void focus(float x, float y) {
+                Point point = new Point((int)x, (int)y);
+                focusImageView.startFocus(point);
+            }
+        });
     }
 
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.camera_surface) {
-            cameraPreview.focus();
-        } else if (id == R.id.camera_close) {
+//        if (id == R.id.camera_surface) {
+//            cameraPreview.focus();
+//        } else
+        if (id == R.id.camera_close) {
             finish();
         } else if (id == R.id.camera_take) {
             takePhoto();
@@ -287,4 +288,10 @@ public class CameraActivity extends Activity implements View.OnClickListener {
         finish();
     }
 
+    @Override
+    public void onAutoFocus(boolean success, Camera camera) {
+        if (success){
+            focusImageView.onFocusSuccess();
+        }
+    }
 }
