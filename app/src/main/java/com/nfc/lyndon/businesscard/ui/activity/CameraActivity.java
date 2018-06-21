@@ -1,23 +1,24 @@
 package com.nfc.lyndon.businesscard.ui.activity;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.hardware.Camera;
+import android.net.Uri;
 import android.os.Bundle;
-import android.view.Display;
+import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.nfc.lyndon.businesscard.R;
+import com.nfc.lyndon.businesscard.app.Constants;
+import com.nfc.lyndon.businesscard.util.AppUtils;
+import com.nfc.lyndon.businesscard.util.BitmapUtils;
 import com.nfc.lyndon.businesscard.widget.CameraPreview;
 import com.nfc.lyndon.businesscard.widget.FocusImageView;
 
@@ -30,38 +31,14 @@ import java.io.IOException;
 /**
  * 拍照界面
  */
-public class CameraActivity extends Activity implements View.OnClickListener, Camera.AutoFocusCallback {
-
-    /**
-     * 拍摄类型-身份证正面
-     */
-    public final static int TYPE_IDCARD_FRONT = 1;
-    /**
-     * 拍摄类型-身份证反面
-     */
-    public final static int TYPE_IDCARD_BACK = 2;
-    /**
-     * 拍摄类型-竖版营业执照
-     */
-    public final static int TYPE_COMPANY_PORTRAIT = 3;
-    /**
-     * 拍摄类型-横版营业执照
-     */
-    public final static int TYPE_COMPANY_LANDSCAPE = 4;
+public class CameraActivity extends Activity implements View.OnClickListener, Camera.AutoFocusCallback, CameraPreview.OnTouchListener {
 
     public final static int REQUEST_CODE = 0X13;
     public final static int RESULT_CODE = 0X14;
 
-    /**
-     * @param type {@link #TYPE_IDCARD_FRONT}
-     *             {@link #TYPE_IDCARD_BACK}
-     *             {@link #TYPE_COMPANY_PORTRAIT}
-     *             {@link #TYPE_COMPANY_LANDSCAPE}
-     */
-    public static void openCertificateCamera(Activity activity, int type) {
-        Intent intent = new Intent(activity, CameraActivity.class);
-        intent.putExtra("type", type);
-        activity.startActivityForResult(intent, REQUEST_CODE);
+    public static void openCertificateCamera(Fragment fragment) {
+        Intent intent = new Intent(fragment.getActivity(), CameraActivity.class);
+        fragment.startActivityForResult(intent, REQUEST_CODE);
     }
 
     /**
@@ -82,56 +59,25 @@ public class CameraActivity extends Activity implements View.OnClickListener, Ca
     private View optionView;
     private View resultView;
 
-    private int type;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        type = getIntent().getIntExtra("type", 0);
-        if (type == TYPE_COMPANY_PORTRAIT) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        } else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        }
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.activity_camera);
         cameraPreview = findViewById(R.id.camera_surface);
         //获取屏幕最小边，设置为cameraPreview较窄的一边
         float screenMinSize = Math.min(getResources().getDisplayMetrics().widthPixels, getResources().getDisplayMetrics().heightPixels);
-        //根据screenMinSize，计算出cameraPreview的较宽的一边，长宽比为标准的16:9
-        float maxSize = screenMinSize / 9.0f * 16.0f;
-        RelativeLayout.LayoutParams layoutParams;
-        if (type == TYPE_COMPANY_PORTRAIT) {
-            layoutParams = new RelativeLayout.LayoutParams((int) screenMinSize, (int) maxSize);
-        } else {
-            layoutParams = new RelativeLayout.LayoutParams((int) maxSize, (int) screenMinSize);
-        }
-        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-        cameraPreview.setLayoutParams(layoutParams);
 
         containerView = findViewById(R.id.camera_crop_container);
         cropView = findViewById(R.id.camera_crop);
-        if (type == TYPE_COMPANY_PORTRAIT) {
-            float width = (int) (screenMinSize * 0.8);
-            float height = (int) (width * 43.0f / 30.0f);
-            LinearLayout.LayoutParams containerParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) height);
-            LinearLayout.LayoutParams cropParams = new LinearLayout.LayoutParams((int) width, (int) height);
-            containerView.setLayoutParams(containerParams);
-            cropView.setLayoutParams(cropParams);
-        } else if (type == TYPE_COMPANY_LANDSCAPE) {
-            float height = (int) (screenMinSize * 0.8);
-            float width = (int) (height * 43.0f / 30.0f);
-            LinearLayout.LayoutParams containerParams = new LinearLayout.LayoutParams((int) width, ViewGroup.LayoutParams.MATCH_PARENT);
-            LinearLayout.LayoutParams cropParams = new LinearLayout.LayoutParams((int) width, (int) height);
-            containerView.setLayoutParams(containerParams);
-            cropView.setLayoutParams(cropParams);
-        } else {
-            float height = (int) (screenMinSize * 0.75);
-            float width = (int) (height * 75.0f / 47.0f);
-            LinearLayout.LayoutParams containerParams = new LinearLayout.LayoutParams((int) width, ViewGroup.LayoutParams.MATCH_PARENT);
-            LinearLayout.LayoutParams cropParams = new LinearLayout.LayoutParams((int) width, (int) height);
-            containerView.setLayoutParams(containerParams);
-            cropView.setLayoutParams(cropParams);
-        }
+
+        float height = (int) (screenMinSize * 0.75);
+        float width = (int) (height * 75.0f / 47.0f);
+        LinearLayout.LayoutParams containerParams = new LinearLayout.LayoutParams((int) width, ViewGroup.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams cropParams = new LinearLayout.LayoutParams((int) width, (int) height);
+        containerView.setLayoutParams(containerParams);
+        cropView.setLayoutParams(cropParams);
+        cropView.setImageResource(R.drawable.camera_company_landscape);
 
         flashImageView = findViewById(R.id.camera_flash);
         optionView = findViewById(R.id.camera_option);
@@ -141,24 +87,16 @@ public class CameraActivity extends Activity implements View.OnClickListener, Ca
         findViewById(R.id.camera_close).setOnClickListener(this);
         findViewById(R.id.camera_take).setOnClickListener(this);
         flashImageView.setOnClickListener(this);
+        findViewById(R.id.camera_alum).setOnClickListener(this);
         findViewById(R.id.camera_result_ok).setOnClickListener(this);
         findViewById(R.id.camera_result_cancel).setOnClickListener(this);
 
-        cameraPreview.setListener(new CameraPreview.OnTouchListener() {
-            @Override
-            public void focus(float x, float y) {
-                Point point = new Point((int)x, (int)y);
-                focusImageView.startFocus(point);
-            }
-        });
+        cameraPreview.setListener(this);
     }
 
     @Override
     public void onClick(View v) {
         int id = v.getId();
-//        if (id == R.id.camera_surface) {
-//            cameraPreview.focus();
-//        } else
         if (id == R.id.camera_close) {
             finish();
         } else if (id == R.id.camera_take) {
@@ -171,8 +109,11 @@ public class CameraActivity extends Activity implements View.OnClickListener, Ca
         } else if (id == R.id.camera_result_cancel) {
             optionView.setVisibility(View.VISIBLE);
             cameraPreview.setEnabled(true);
+            cameraPreview.setListener(this);
             resultView.setVisibility(View.GONE);
             cameraPreview.startPreview();
+        } else if (id == R.id.camera_alum) {
+            AppUtils.openAlbumPage(this);
         }
     }
 
@@ -196,17 +137,11 @@ public class CameraActivity extends Activity implements View.OnClickListener, Ca
 
                             //计算裁剪位置
                             float left, top, right, bottom;
-                            if (type == TYPE_COMPANY_PORTRAIT) {
-                                left = (float) cropView.getLeft() / (float) cameraPreview.getWidth();
-                                top = ((float) containerView.getTop() - (float) cameraPreview.getTop()) / (float) cameraPreview.getHeight();
-                                right = (float) cropView.getRight() / (float) cameraPreview.getWidth();
-                                bottom = (float) containerView.getBottom() / (float) cameraPreview.getHeight();
-                            } else {
-                                left = ((float) containerView.getLeft() - (float) cameraPreview.getLeft()) / (float) cameraPreview.getWidth();
-                                top = (float) cropView.getTop() / (float) cameraPreview.getHeight();
-                                right = (float) containerView.getRight() / (float) cameraPreview.getWidth();
-                                bottom = (float) cropView.getBottom() / (float) cameraPreview.getHeight();
-                            }
+
+                            left = ((float) containerView.getLeft() - (float) cameraPreview.getLeft()) / (float) cameraPreview.getWidth();
+                            top = (float) cropView.getTop() / (float) cameraPreview.getHeight();
+                            right = (float) containerView.getRight() / (float) cameraPreview.getWidth();
+                            bottom = (float) cropView.getBottom() / (float) cameraPreview.getHeight();
                             //裁剪及保存到文件
                             Bitmap cropBitmap = Bitmap.createBitmap(bitmap,
                                     (int) (left * (float) bitmap.getWidth()),
@@ -224,6 +159,7 @@ public class CameraActivity extends Activity implements View.OnClickListener, Ca
                                 public void run() {
                                     resultView.setVisibility(View.VISIBLE);
                                     cameraPreview.stopPreView();
+                                    cameraPreview.setListener(null);
                                 }
                             });
                             return;
@@ -250,32 +186,14 @@ public class CameraActivity extends Activity implements View.OnClickListener, Ca
      * @return 拍摄图片原始文件
      */
     private File getOriginalFile() {
-        switch (type) {
-            case TYPE_IDCARD_FRONT:
-                return new File(getExternalCacheDir(), "idCardFront.jpg");
-            case TYPE_IDCARD_BACK:
-                return new File(getExternalCacheDir(), "idCardBack.jpg");
-            case TYPE_COMPANY_PORTRAIT:
-            case TYPE_COMPANY_LANDSCAPE:
-                return new File(getExternalCacheDir(), "companyInfo.jpg");
-        }
-        return new File(getExternalCacheDir(), "picture.jpg");
+        return new File(getExternalCacheDir(), "card.jpg");
     }
 
     /**
      * @return 拍摄图片裁剪文件
      */
     private File getCropFile() {
-        switch (type) {
-            case TYPE_IDCARD_FRONT:
-                return new File(getExternalCacheDir(), "idCardFrontCrop.jpg");
-            case TYPE_IDCARD_BACK:
-                return new File(getExternalCacheDir(), "idCardBackCrop.jpg");
-            case TYPE_COMPANY_PORTRAIT:
-            case TYPE_COMPANY_LANDSCAPE:
-                return new File(getExternalCacheDir(), "companyInfoCrop.jpg");
-        }
-        return new File(getExternalCacheDir(), "pictureCrop.jpg");
+        return new File(getExternalCacheDir(), "crop.jpg");
     }
 
     /**
@@ -283,15 +201,38 @@ public class CameraActivity extends Activity implements View.OnClickListener, Ca
      */
     private void goBack() {
         Intent intent = new Intent();
-        intent.putExtra("result", getCropFile().getPath());
-        setResult(RESULT_CODE, intent);
+        intent.putExtra("path", getCropFile().getPath());
+        setResult(RESULT_OK, intent);
         finish();
     }
 
     @Override
     public void onAutoFocus(boolean success, Camera camera) {
-        if (success){
+        if (success) {
             focusImageView.onFocusSuccess();
+        }
+    }
+
+    @Override
+    public void focus(float x, float y) {
+        Point point = new Point((int) x, (int) y);
+        focusImageView.startFocus(point);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == Constants.ALBUM_REQUEST_CODE) {
+            if (data != null && data.getData() != null) {
+                final Uri uri = data.getData();
+                final Bitmap bitmap = BitmapFactory.decodeFile(BitmapUtils.getImageAbsolutePath(this, uri));
+
+                BitmapUtils.compressImage(bitmap, getCropFile().getAbsolutePath());
+                Intent intent = new Intent();
+                intent.putExtra("path", getCropFile().getPath());
+                setResult(RESULT_OK, intent);
+                finish();
+            }
         }
     }
 }

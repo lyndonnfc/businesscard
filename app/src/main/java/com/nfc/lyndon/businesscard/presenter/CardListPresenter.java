@@ -5,37 +5,24 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.JsonReader;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
 import com.lzy.okgo.request.base.Request;
-import com.nfc.lyndon.businesscard.R;
 import com.nfc.lyndon.businesscard.app.Constants;
 import com.nfc.lyndon.businesscard.base.BaseResponse;
 import com.nfc.lyndon.businesscard.contract.CardListContract;
-import com.nfc.lyndon.businesscard.contract.LoginContract;
 import com.nfc.lyndon.businesscard.entity.CardDetailEntity;
 import com.nfc.lyndon.businesscard.entity.CardEntity;
 import com.nfc.lyndon.businesscard.entity.CardListEntity;
-import com.nfc.lyndon.businesscard.model.CardModel;
 import com.nfc.lyndon.businesscard.ui.activity.CardDetailActivity;
 import com.nfc.lyndon.businesscard.ui.activity.EditActivity;
-import com.nfc.lyndon.businesscard.ui.activity.ResultActivity;
-import com.nfc.lyndon.businesscard.ui.adapter.CardAdapter;
-import com.nfc.lyndon.businesscard.util.ScreenUtils;
 import com.nfc.lyndon.businesscard.util.ToastUtils;
 import com.nfc.lyndon.businesscard.util.WeakHandler;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -56,6 +43,7 @@ public class CardListPresenter extends CardListContract.CardListPresenter {
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case HANDLER_GET_CARD_LIST_SUCCESS:
+                    getView().hidLoading();
                     BaseResponse<CardListEntity> baseResponse = (BaseResponse<CardListEntity>) msg.obj;
                     if (baseResponse.getResult() == null) {
                         getView().showAddView();
@@ -66,9 +54,11 @@ public class CardListPresenter extends CardListContract.CardListPresenter {
                     }
                     break;
                 case HANDLER_GET_CARD_LIST_FAILED:
+                    getView().hidLoading();
                     ToastUtils.toastShort((String) msg.obj);
                     break;
                 case HANDLER_GET_RESULT_SUCCESS:
+                    getView().hidLoading();
                     CardEntity cardEntity = (CardEntity) message.obj;
                     Intent intent = new Intent(mContext, EditActivity.class);
                     Bundle bundle = new Bundle();
@@ -78,6 +68,7 @@ public class CardListPresenter extends CardListContract.CardListPresenter {
                     mContext.startActivity(intent);
                     break;
                 case HANDLER_FAILED:
+                    getView().hidLoading();
                     ToastUtils.toastShort((String) msg.obj);
                     break;
             }
@@ -100,7 +91,6 @@ public class CardListPresenter extends CardListContract.CardListPresenter {
         mModel.requestCardList(uid, keyword, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
-                mView.hidLoading();
                 BaseResponse<CardListEntity> baseResponse = JSON.parseObject(response.body(),
                         new TypeReference<BaseResponse<CardListEntity>>() {
                         });
@@ -122,7 +112,6 @@ public class CardListPresenter extends CardListContract.CardListPresenter {
             @Override
             public void onError(Response<String> response) {
                 super.onError(response);
-                mView.hidLoading();
                 message = new Message();
                 message.what = HANDLER_GET_CARD_LIST_FAILED;
                 message.obj = response.getException().getMessage();
@@ -143,7 +132,6 @@ public class CardListPresenter extends CardListContract.CardListPresenter {
         mModel.uploadCardFile(file, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
-                mView.hidLoading();
                 BaseResponse<CardDetailEntity> baseResponse = JSON.parseObject(response.body(),
                         new TypeReference<BaseResponse<CardDetailEntity>>() {
                         });
@@ -168,7 +156,6 @@ public class CardListPresenter extends CardListContract.CardListPresenter {
             @Override
             public void onError(Response<String> response) {
                 super.onError(response);
-                mView.hidLoading();
                 message = new Message();
                 message.what = HANDLER_FAILED;
                 message.obj = response.getException().getMessage();

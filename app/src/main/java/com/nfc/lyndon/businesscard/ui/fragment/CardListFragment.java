@@ -151,9 +151,10 @@ public class CardListFragment extends BaseFragment<CardListPresenter, CardModel>
                 break;
             case R.id.iv_flow_camera:
             case R.id.iv_camera:
-                dialog = new PictureSelectorDialog(mContext, R.style.transparent_dialog);
-                dialog.setOnDialogClickListener(this);
-                dialog.show();
+//                dialog = new PictureSelectorDialog(mContext, R.style.transparent_dialog);
+//                dialog.setOnDialogClickListener(this);
+//                dialog.show();
+                takePhoto();
                 break;
         }
     }
@@ -205,7 +206,7 @@ public class CardListFragment extends BaseFragment<CardListPresenter, CardModel>
     public void takePhoto() {
 //        path = mContext.getExternalCacheDir() + File.separator + "card.png";
 //        AppUtils.openCameraPage(mContext, this, path);
-        CameraActivity.openCertificateCamera(getActivity(), CameraActivity.TYPE_IDCARD_FRONT);
+        CameraActivity.openCertificateCamera(this);
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -220,26 +221,15 @@ public class CardListFragment extends BaseFragment<CardListPresenter, CardModel>
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
-                case Constants.CAMERA_REQUEST_CODE:
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            bitmap = BitmapUtils.compressImage(BitmapFactory.decodeFile(path), path);
-                            mPresenter.uploadCardFile(new File(path));
+                case CameraActivity.REQUEST_CODE:
+                    if (data != null){
+                        String path = data.getStringExtra("path");
+                        File file = new File(path);
+                        if (!file.exists()){
+                            ToastUtils.toastShort("文件不存在");
+                            return;
                         }
-                    }).start();
-                    break;
-                case Constants.ALBUM_REQUEST_CODE:
-                    if (data != null && data.getData() != null) {
-                        final Uri uri = data.getData();
-                        final Bitmap bitmap = BitmapFactory.decodeFile(BitmapUtils.getImageAbsolutePath(mContext, uri));
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                BitmapUtils.compressImage(bitmap, path);
-                                mPresenter.uploadCardFile(new File(path));
-                            }
-                        }).start();
+                        mPresenter.uploadCardFile(file);
                     }
                     break;
             }

@@ -50,4 +50,7 @@
     <string name="gallery">相册</string>
     <string name="department">部门</string>
     <string name="touch_to_focus">触摸屏幕对焦</string>
+    <string name="take_photo_again">重拍</string>
+    <string name="local_picture">相册</string>
+    <string name="camera">相机</string>
 </resources>

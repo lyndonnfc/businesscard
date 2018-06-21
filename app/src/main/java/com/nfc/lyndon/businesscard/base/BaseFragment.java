@@ -86,6 +86,8 @@ public abstract class BaseFragment<T extends BasePresenter, M extends BaseModel>
     protected abstract M initModel();
 
     public void showDialog(String message){
+        if (dialog != null && dialog.isShowing())
+            dialog.dismiss();
         dialog = new ProgressDialog(mContext, R.style.transparent_dialog);
         dialog.show();
         dialog.setMessage(message);
