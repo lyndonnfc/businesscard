@@ -163,7 +163,7 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
         if (cardEntity != null) {
             logo = cardEntity.getCardUrl();
             Glide.with(mContext)
-                    .load(cardEntity.getLogo())
+                    .load(cardEntity.getCardUrl())
                     .into(ivFont);
             etName.setText(cardEntity.getRealName());
             etCompany.setText(cardEntity.getCompanyName());
