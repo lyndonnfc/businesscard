@@ -217,8 +217,8 @@ public class AppUtils {
         intent.putExtra("aspectY", 5);
 
         // outputX,outputY 是剪裁图片的宽高
-        intent.putExtra("outputX", 300);
-        intent.putExtra("outputY", 300);
+        intent.putExtra("outputX", 900);
+        intent.putExtra("outputY", 500);
         intent.putExtra("return-data", false);
         intent.putExtra("noFaceDetection", true);
 
@@ -228,7 +228,6 @@ public class AppUtils {
         }
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(out));
         intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
-
         return intent;
     }
 }

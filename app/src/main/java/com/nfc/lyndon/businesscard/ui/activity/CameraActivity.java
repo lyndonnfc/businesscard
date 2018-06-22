@@ -10,6 +10,7 @@ import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -39,6 +40,11 @@ public class CameraActivity extends Activity implements View.OnClickListener, Ca
     public static void openCertificateCamera(Fragment fragment) {
         Intent intent = new Intent(fragment.getContext(), CameraActivity.class);
         fragment.startActivityForResult(intent, REQUEST_CODE);
+    }
+
+    public static void openCertificateCamera(Activity activity) {
+        Intent intent = new Intent(activity, CameraActivity.class);
+        activity.startActivityForResult(intent, REQUEST_CODE);
     }
 
     /**
@@ -222,15 +228,20 @@ public class CameraActivity extends Activity implements View.OnClickListener, Ca
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == Constants.ALBUM_REQUEST_CODE) {
-            if (data != null && data.getData() != null) {
-                final Uri uri = data.getData();
-                final Bitmap bitmap = BitmapFactory.decodeFile(BitmapUtils.getImageAbsolutePath(this, uri));
-                BitmapUtils.compressImage(bitmap, getCropFile().getAbsolutePath());
-                Intent intent = new Intent();
-                intent.putExtra("path", getCropFile().getPath());
-                setResult(RESULT_OK, intent);
-                finish();
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case Constants.ALBUM_REQUEST_CODE:
+                    if (data != null && data.getData() != null) {
+                        Intent pictureIntent = AppUtils.invokeSystemCrop(data.getData(), getCropFile().getPath());
+                        startActivityForResult(pictureIntent, Constants.CROP_REQUEST_CODE);
+                    }
+                    break;
+                case Constants.CROP_REQUEST_CODE:
+                    Intent intent = new Intent();
+                    intent.putExtra("path", getCropFile().getPath());
+                    setResult(RESULT_OK, intent);
+                    finish();
+                    break;
             }
         }
     }

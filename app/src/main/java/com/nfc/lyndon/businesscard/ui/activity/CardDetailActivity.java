@@ -177,7 +177,7 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
         this.cardEntity = new CardEntity();
         this.cardEntity = cardEntity;
         Glide.with(mContext)
-                .load(cardEntity.getLogo())
+                .load(cardEntity.getCardUrl())
                 .into(ivCard);
         tvName.setText(cardEntity.getRealName());
         tvPosition.setText(cardEntity.getPosition());

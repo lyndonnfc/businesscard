@@ -122,7 +122,7 @@ public class HttpManager {
         Map<String, Object> params = new HashMap<>();
         params.put("uid", uid);
         params.put("isSelf", isSelf);
-        params.put("logo", logo);
+        params.put("cardUrl", logo);
         params.put("realName", realName);
         params.put("phone", phone);
         params.put("position", position);
@@ -156,7 +156,7 @@ public class HttpManager {
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
         params.put("uid", uid);
-        params.put("logo", logo);
+        params.put("cardUrl", logo);
         params.put("realName", realName);
         params.put("phone", phone);
         params.put("position", position);

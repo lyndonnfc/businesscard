@@ -1,6 +1,7 @@
 package com.nfc.lyndon.businesscard.ui.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -8,10 +9,11 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.nfc.lyndon.businesscard.R;
 import com.nfc.lyndon.businesscard.app.Constants;
 import com.nfc.lyndon.businesscard.base.MvpActivity;
@@ -28,8 +30,6 @@ import com.nfc.lyndon.businesscard.widget.PictureSelectorDialog;
 import com.nfc.lyndon.businesscard.widget.ProgressDialog;
 
 import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,23 +44,26 @@ import permissions.dispatcher.RuntimePermissions;
 public class EditActivity extends MvpActivity<EditPresenter, EditModel> implements EditContract.EditView,
         PictureSelectorDialog.OnDialogClickListener {
 
+    @BindView(R.id.tv_title)
+    TextView tvTitle;
+    @BindView(R.id.tv_right)
+    TextView tvRight;
     @BindView(R.id.iv_font)
-    ImageView ivFont;
+    PhotoView ivFont;
     @BindView(R.id.et_name)
     EditText etName;
-    @BindView(R.id.et_company)
-    EditText etCompany;
     @BindView(R.id.et_position)
     EditText etPosition;
-    @BindView(R.id.et_mobile)
-    EditText etMobile;
     @BindView(R.id.et_department)
     EditText etDepartment;
+    @BindView(R.id.et_company)
+    EditText etCompany;
+    @BindView(R.id.et_mobile)
+    EditText etMobile;
     @BindView(R.id.et_email)
     EditText etEmail;
     @BindView(R.id.et_address)
     EditText etAddress;
-
     private boolean isCreate;
 
     private long cardId;
@@ -92,6 +95,8 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
 
     @Override
     public void initView() {
+        tvTitle.setText("编辑名片");
+        tvRight.setText("完成");
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             isCreate = bundle.getBoolean("isCreate");
@@ -101,11 +106,6 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
             }
             cardEntity = (CardEntity) bundle.getSerializable("cardInfo");
         }
-        Glide.with(mContext)
-                .load(R.drawable.img_avatar_bg)
-                .apply(new RequestOptions()
-                        .circleCrop())
-                .into(ivFont);
     }
 
     @Override
@@ -123,15 +123,17 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
         return new EditModel();
     }
 
-    @OnClick({R.id.iv_font, R.id.btn_save, R.id.btn_cancel})
+    @OnClick({R.id.iv_back, R.id.tv_right, R.id.iv_font, R.id.lay_head})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.iv_font:
-                PictureSelectorDialog dialog = new PictureSelectorDialog(mContext, R.style.transparent_dialog);
-                dialog.setOnDialogClickListener(this);
-                dialog.show();
+            case R.id.iv_back:
+                finish();
                 break;
-            case R.id.btn_save:
+            case R.id.iv_font:
+            case R.id.lay_head:
+                EditActivityPermissionsDispatcher.takePhotoWithPermissionCheck(this);
+                break;
+            case R.id.tv_right:
                 String realName = etName.getText().toString();
                 String company = etCompany.getText().toString();
                 String department = etDepartment.getText().toString();
@@ -140,29 +142,8 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
                 String email = etEmail.getText().toString();
                 String address = etAddress.getText().toString();
 
-                if (TextUtils.isEmpty(logo)) {
-                    ToastUtils.toastShort("请先上传logo");
-                    return;
-                } else if (TextUtils.isEmpty(realName)) {
+                if (TextUtils.isEmpty(realName)) {
                     ToastUtils.toastShort("请输入姓名");
-                    return;
-                } else if (TextUtils.isEmpty(company)) {
-                    ToastUtils.toastShort("请输入公司");
-                    return;
-                } else if (TextUtils.isEmpty(department)) {
-                    ToastUtils.toastShort("请输入部门");
-                    return;
-                } else if (TextUtils.isEmpty(position)) {
-                    ToastUtils.toastShort("请输入职位");
-                    return;
-                } else if (!StringUtils.isMobileNo(mobile)) {
-                    ToastUtils.toastShort("请输入正确的手机号");
-                    return;
-                } else if (!CheckUtils.isEmail(email)) {
-                    ToastUtils.toastShort("请输入正确的邮箱");
-                    return;
-                } else if (TextUtils.isEmpty(address)) {
-                    ToastUtils.toastShort("请输入地址");
                     return;
                 }
 
@@ -175,18 +156,14 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
                 }
 
                 break;
-            case R.id.btn_cancel:
-                finish();
-                break;
         }
     }
 
     private void showData() {
         if (cardEntity != null) {
-            logo = cardEntity.getLogo();
+            logo = cardEntity.getCardUrl();
             Glide.with(mContext)
                     .load(cardEntity.getLogo())
-                    .apply(new RequestOptions().circleCrop())
                     .into(ivFont);
             etName.setText(cardEntity.getRealName());
             etCompany.setText(cardEntity.getCompanyName());
@@ -203,7 +180,6 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
         logo = imgUrl;
         Glide.with(mContext)
                 .load(imgUrl)
-                .apply(new RequestOptions().circleCrop())
                 .into(ivFont);
     }
 
@@ -232,8 +208,7 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
     @NeedsPermission({Manifest.permission.CAMERA,
             Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void takePhoto() {
-        path = getExternalCacheDir() + File.separator + "temp.png";
-        AppUtils.openCameraPage(mContext, this, path);
+        CameraActivity.openCertificateCamera(this);
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -244,21 +219,20 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) switch (requestCode) {
-            case Constants.CAMERA_REQUEST_CODE:
-                cPath = getExternalCacheDir() + File.separator + "corp.png";
-                Intent cameraIntent = AppUtils.invokeSystemCrop(Uri.fromFile(new File(path)), cPath);
-                startActivityForResult(cameraIntent, Constants.CROP_REQUEST_CODE);
-                break;
-            case Constants.ALBUM_REQUEST_CODE:
-                cPath = getExternalCacheDir() + File.separator + "corp.png";
-                Intent pictureIntent = AppUtils.invokeSystemCrop(data.getData(), cPath);
-                startActivityForResult(pictureIntent, Constants.CROP_REQUEST_CODE);
-                break;
-            case Constants.CROP_REQUEST_CODE:
-                File file = new File(cPath);
-                mPresenter.uploadLogo(file);
-                break;
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case CameraActivity.REQUEST_CODE:
+                    if (data != null){
+                        String path = data.getStringExtra("path");
+                        File file = new File(path);
+                        if (!file.exists()){
+                            ToastUtils.toastShort("文件不存在");
+                            return;
+                        }
+                        mPresenter.uploadLogo(file);
+                    }
+                    break;
+            }
         }
     }
 }
