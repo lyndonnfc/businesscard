@@ -9,12 +9,13 @@ import android.nfc.NfcManager;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.nfc.lyndon.businesscard.R;
 import com.nfc.lyndon.businesscard.base.MvpActivity;
 import com.nfc.lyndon.businesscard.contract.DetailContract;
@@ -26,9 +27,8 @@ import com.nfc.lyndon.businesscard.util.BitmapUtils;
 import com.nfc.lyndon.businesscard.util.ToastUtils;
 import com.nfc.lyndon.businesscard.widget.ConfirmOrCancelDialog;
 
-import java.io.Serializable;
-
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
@@ -38,7 +38,7 @@ import permissions.dispatcher.RuntimePermissions;
  */
 @RuntimePermissions
 public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel> implements
-        DetailContract.DetailView{
+        DetailContract.DetailView {
 
     @BindView(R.id.tv_name)
     TextView tvName;
@@ -46,12 +46,8 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
     TextView tvPosition;
     @BindView(R.id.tv_company)
     TextView tvCompany;
-    @BindView(R.id.tv_company_en)
-    TextView tvCompanyEn;
-    @BindView(R.id.iv_avatar)
-    ImageView ivAvatar;
-    @BindView(R.id.tv_mobile)
-    TextView tvMobile;
+    @BindView(R.id.tv_phone)
+    TextView tvPhone;
     @BindView(R.id.tv_department)
     TextView tvDepartment;
     @BindView(R.id.tv_email)
@@ -59,7 +55,13 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
     @BindView(R.id.tv_address)
     TextView tvAddress;
     @BindView(R.id.lay_top)
-    ConstraintLayout layTop;
+    LinearLayout layTop;
+    @BindView(R.id.tv_title)
+    TextView tvTitle;
+    @BindView(R.id.tv_right)
+    TextView tvRight;
+    @BindView(R.id.iv_card)
+    PhotoView ivCard;
 
     private long id;
 
@@ -73,6 +75,8 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
 
     @Override
     public void initView() {
+        tvTitle.setText("名片详情");
+        tvRight.setText("分享");
         id = getIntent().getLongExtra("cardId", 0);
     }
 
@@ -91,11 +95,14 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
         return new DetailModel();
     }
 
-    @OnClick({R.id.tv_share, R.id.tv_edit, R.id.tv_trans_nfc, R.id.tv_delete,
-            R.id.tv_mobile, R.id.tv_email})
+    @OnClick({R.id.iv_back, R.id.tv_edit, R.id.tv_right, R.id.tv_trans_nfc, R.id.tv_delete,
+            R.id.tv_phone, R.id.tv_email})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.tv_share:
+            case R.id.iv_back:
+                finish();
+                break;
+            case R.id.tv_right:
                 CardDetailActivityPermissionsDispatcher.shareWithPermissionCheck(this, layTop);
                 break;
             case R.id.tv_edit:
@@ -118,7 +125,7 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
                     ToastUtils.toastShort("请打开NFC");
                     return;
                 }
-                if (cardEntity != null){
+                if (cardEntity != null) {
                     String content = JSON.toJSONString(cardEntity);
                     mPresenter.toTransfer(content);
                 }
@@ -135,7 +142,7 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
                 dialog.show();
                 dialog.setMessage("确定要删除此名片吗");
                 break;
-            case R.id.tv_mobile:
+            case R.id.tv_phone:
                 CardDetailActivityPermissionsDispatcher
                         .dialPhoneWithPermissionCheck(this, cardEntity.getPhone());
                 break;
@@ -146,7 +153,7 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
     }
 
     @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE})
-    public void share(View v){
+    public void share(View v) {
         Intent imageIntent = new Intent(Intent.ACTION_SEND);
         imageIntent.setType("image/jpeg");
         imageIntent.putExtra(Intent.EXTRA_STREAM,
@@ -171,13 +178,11 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
         this.cardEntity = cardEntity;
         Glide.with(mContext)
                 .load(cardEntity.getLogo())
-                .apply(new RequestOptions().circleCrop())
-                .into(ivAvatar);
+                .into(ivCard);
         tvName.setText(cardEntity.getRealName());
         tvPosition.setText(cardEntity.getPosition());
         tvCompany.setText(cardEntity.getCompanyName());
-        tvCompanyEn.setText(cardEntity.getEnglishCompanyName());
-        tvMobile.setText(cardEntity.getPhone());
+        tvPhone.setText(cardEntity.getPhone());
         tvDepartment.setText(cardEntity.getDepartment());
         tvEmail.setText(cardEntity.getEmail());
         tvAddress.setText(cardEntity.getAddress());
@@ -199,13 +204,21 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
 
     /**
      * 发送邮件
+     *
      * @param mailAdress
      */
-    public void sendEMail( String mailAdress) {
-        Uri uri = Uri.parse("mailto:"+mailAdress);
+    public void sendEMail(String mailAdress) {
+        Uri uri = Uri.parse("mailto:" + mailAdress);
         Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
         intent.putExtra(Intent.EXTRA_EMAIL, PreferenceManager.getInstance()
                 .getString(PreferenceManager.EMAIL));
         startActivity(Intent.createChooser(intent, "请选择发送方式"));
     }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ButterKnife.bind(this);
+    }
+
 }

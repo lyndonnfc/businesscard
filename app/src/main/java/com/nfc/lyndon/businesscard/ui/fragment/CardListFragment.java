@@ -151,10 +151,7 @@ public class CardListFragment extends BaseFragment<CardListPresenter, CardModel>
                 break;
             case R.id.iv_flow_camera:
             case R.id.iv_camera:
-//                dialog = new PictureSelectorDialog(mContext, R.style.transparent_dialog);
-//                dialog.setOnDialogClickListener(this);
-//                dialog.show();
-                takePhoto();
+                CardListFragmentPermissionsDispatcher.takePhotoWithPermissionCheck(this);
                 break;
         }
     }
@@ -204,8 +201,6 @@ public class CardListFragment extends BaseFragment<CardListPresenter, CardModel>
     @NeedsPermission({Manifest.permission.CAMERA,
             Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void takePhoto() {
-//        path = mContext.getExternalCacheDir() + File.separator + "card.png";
-//        AppUtils.openCameraPage(mContext, this, path);
         CameraActivity.openCertificateCamera(this);
     }
 

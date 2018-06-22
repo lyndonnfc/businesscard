@@ -56,7 +56,7 @@ public abstract class BaseActivity extends AppCompatActivity{
         });
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResId());
-        StatusBarUtil.setColor(this, ContextCompat.getColor(mContext, R.color.blue));
+        StatusBarUtil.setColor(this, ContextCompat.getColor(mContext, R.color.blue), 0);
         ButterKnife.bind(this);
     }
 

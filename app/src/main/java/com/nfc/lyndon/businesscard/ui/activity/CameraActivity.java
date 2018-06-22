@@ -37,7 +37,7 @@ public class CameraActivity extends Activity implements View.OnClickListener, Ca
     public final static int RESULT_CODE = 0X14;
 
     public static void openCertificateCamera(Fragment fragment) {
-        Intent intent = new Intent(fragment.getActivity(), CameraActivity.class);
+        Intent intent = new Intent(fragment.getContext(), CameraActivity.class);
         fragment.startActivityForResult(intent, REQUEST_CODE);
     }
 

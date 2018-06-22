@@ -213,8 +213,8 @@ public class AppUtils {
         intent.putExtra("scale", true);
 
         // aspectX aspectY 是宽高的比例
-        intent.putExtra("aspectX", 1);
-        intent.putExtra("aspectY", 1);
+        intent.putExtra("aspectX", 9);
+        intent.putExtra("aspectY", 5);
 
         // outputX,outputY 是剪裁图片的宽高
         intent.putExtra("outputX", 300);

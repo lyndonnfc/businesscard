@@ -54,8 +54,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
 
+    @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        camera = CameraUtils.openCamera();
+        camera = Camera.open();
         if (camera != null) {
             try {
                 camera.setPreviewDisplay(holder);
@@ -102,10 +103,12 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
+    @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
         //因为设置了固定屏幕方向，所以在实际使用中不会触发这个方法
     }
 
+    @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         //回收释放资源
         release();

@@ -108,6 +108,15 @@
                 android:visibility="gone">
 
                 <TextView
+                    android:id="@+id/camera_alum"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:textSize="@dimen/sp_16"
+                    android:textColor="@color/white"
+                    android:text="@string/local_picture"/>
+
+                <TextView
                     android:id="@+id/camera_result_cancel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
