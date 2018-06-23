@@ -9,40 +9,68 @@ import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
 import android.nfc.NfcManager;
-import android.nfc.Tag;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.text.TextUtils;
-import android.util.Log;
-import android.widget.Toast;
+import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.nfc.lyndon.businesscard.R;
 import com.nfc.lyndon.businesscard.base.MvpActivity;
+import com.nfc.lyndon.businesscard.entity.CardEntity;
 import com.nfc.lyndon.businesscard.model.TransferModel;
 import com.nfc.lyndon.businesscard.presenter.TransferPresenter;
-import com.nfc.lyndon.businesscard.util.TextRecord;
 import com.nfc.lyndon.businesscard.util.ToastUtils;
 
 import java.nio.charset.Charset;
 import java.util.Locale;
+
+import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * 正在传输页面
  */
 @SuppressLint("NewApi")
 public class TransferActivity extends MvpActivity<TransferPresenter, TransferModel> implements
-        NfcAdapter.CreateNdefMessageCallback, NfcAdapter.OnNdefPushCompleteCallback{
+        NfcAdapter.CreateNdefMessageCallback, NfcAdapter.OnNdefPushCompleteCallback {
 
+    @BindView(R.id.tv_name)
+    TextView tvName;
+    @BindView(R.id.tv_position)
+    TextView tvPosition;
+    @BindView(R.id.tv_phone)
+    TextView tvPhone;
+    @BindView(R.id.tv_company)
+    TextView tvCompany;
+    @BindView(R.id.tv_email)
+    TextView tvEmail;
+    @BindView(R.id.tv_address)
+    TextView tvAddress;
+    @BindView(R.id.tv_title)
+    TextView tvTitle;
     private NfcAdapter mNfcAdapter;
 
     private PendingIntent mPendingIntent;
 
     private String content;// 要传送的名片内容
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         content = getIntent().getStringExtra("content");
+
+        if (content != null) {
+            CardEntity cardEntity = JSON.parseObject(content, CardEntity.class);
+            if (cardEntity != null) {
+                tvName.setText(cardEntity.getRealName());
+                tvPosition.setText(cardEntity.getDepartment() + "    " + cardEntity.getPosition());
+                tvPhone.setText(cardEntity.getPhone());
+                tvCompany.setText(cardEntity.getCompanyName());
+                tvEmail.setText(cardEntity.getEmail());
+                tvAddress.setText(cardEntity.getAddress());
+            }
+        }
 
         NfcManager manager = (NfcManager) getSystemService(Context.NFC_SERVICE);
         if (manager != null) {
@@ -64,7 +92,7 @@ public class TransferActivity extends MvpActivity<TransferPresenter, TransferMod
 
     @Override
     public void initView() {
-
+        tvTitle.setText("NFC递名片");
     }
 
     @Override
@@ -137,4 +165,8 @@ public class TransferActivity extends MvpActivity<TransferPresenter, TransferMod
                 NdefRecord.RTD_TEXT, new byte[0], data);
     }
 
+    @OnClick(R.id.iv_back)
+    public void onViewClicked() {
+        finish();
+    }
 }
