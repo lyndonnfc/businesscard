@@ -86,8 +86,6 @@ public class CardListFragment extends BaseFragment<CardListPresenter, CardModel>
 
     private Bitmap bitmap;
 
-    private PictureSelectorDialog dialog;
-
     @Override
     protected int getContentId() {
         return R.layout.fragment_card_list;

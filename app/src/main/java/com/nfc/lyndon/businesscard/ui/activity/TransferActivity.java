@@ -31,8 +31,7 @@ import java.util.Locale;
  */
 @SuppressLint("NewApi")
 public class TransferActivity extends MvpActivity<TransferPresenter, TransferModel> implements
-        NfcAdapter.CreateNdefMessageCallback, NfcAdapter.OnNdefPushCompleteCallback,
-        NfcAdapter.ReaderCallback{
+        NfcAdapter.CreateNdefMessageCallback, NfcAdapter.OnNdefPushCompleteCallback{
 
     private NfcAdapter mNfcAdapter;
 
@@ -138,17 +137,4 @@ public class TransferActivity extends MvpActivity<TransferPresenter, TransferMod
                 NdefRecord.RTD_TEXT, new byte[0], data);
     }
 
-    void processIntent(Intent intent) {
-        Parcelable[] rawMsgs = intent
-                .getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-
-        NdefMessage msg = (NdefMessage) rawMsgs[0];
-        String text = TextRecord.parse(msg.getRecords()[0]).getText();
-        Toast.makeText(this, text, Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onTagDiscovered(Tag tag) {
-        ToastUtils.toastShort("----------------------");
-    }
 }

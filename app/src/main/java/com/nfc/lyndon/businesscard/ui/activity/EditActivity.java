@@ -70,10 +70,6 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
 
     private boolean isSelf;
 
-    private String path;
-
-    private String cPath;
-
     private ProgressDialog dialog;
 
     private String logo;

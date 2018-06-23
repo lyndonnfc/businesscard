@@ -149,7 +149,7 @@ public class SendCardFragment extends BaseFragment<SendCardPresenter, SendCardMo
         tvEdit.setVisibility(View.VISIBLE);
         layCreateCard.setVisibility(View.GONE);
         Glide.with(mContext)
-                .load(cardEntity.getLogo())
+                .load(cardEntity.getCardUrl())
                 .apply(new RequestOptions().circleCrop())
                 .into(ivAvatar);
         tvName.setText(cardEntity.getRealName());
