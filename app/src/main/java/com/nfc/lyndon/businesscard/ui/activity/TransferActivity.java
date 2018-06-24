@@ -11,14 +11,19 @@ import android.nfc.NfcEvent;
 import android.nfc.NfcManager;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.nfc.lyndon.businesscard.R;
 import com.nfc.lyndon.businesscard.base.MvpActivity;
 import com.nfc.lyndon.businesscard.entity.CardEntity;
 import com.nfc.lyndon.businesscard.model.TransferModel;
 import com.nfc.lyndon.businesscard.presenter.TransferPresenter;
+import com.nfc.lyndon.businesscard.util.GlideRoundTransform;
+import com.nfc.lyndon.businesscard.util.ScreenUtils;
 import com.nfc.lyndon.businesscard.util.ToastUtils;
 
 import java.nio.charset.Charset;
@@ -48,6 +53,8 @@ public class TransferActivity extends MvpActivity<TransferPresenter, TransferMod
     TextView tvAddress;
     @BindView(R.id.tv_title)
     TextView tvTitle;
+    @BindView(R.id.iv_card)
+    ImageView ivCard;
     private NfcAdapter mNfcAdapter;
 
     private PendingIntent mPendingIntent;
@@ -63,6 +70,11 @@ public class TransferActivity extends MvpActivity<TransferPresenter, TransferMod
         if (content != null) {
             CardEntity cardEntity = JSON.parseObject(content, CardEntity.class);
             if (cardEntity != null) {
+                Glide.with(this).load(cardEntity.getCardUrl()).apply(new RequestOptions()
+                        .transform(new GlideRoundTransform(this,
+                                ScreenUtils.dip2px(this,6f),
+                                GlideRoundTransform.CornerType.ALL)))
+                        .into(ivCard);
                 tvName.setText(cardEntity.getRealName());
                 tvPosition.setText(cardEntity.getDepartment() + "    " + cardEntity.getPosition());
                 tvPhone.setText(cardEntity.getPhone());

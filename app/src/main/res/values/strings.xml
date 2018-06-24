@@ -53,4 +53,5 @@
     <string name="take_photo_again">重拍</string>
     <string name="local_picture">相册</string>
     <string name="camera">相机</string>
+    <string name="near_by_phone">靠近对方手机，递出你的名片吧</string>
 </resources>

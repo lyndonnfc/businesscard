@@ -9,14 +9,23 @@
 
     <include layout="@layout/layout_common_title"/>
 
+    <ImageView
+        android:id="@+id/iv_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginHorizontal="10dp"/>
+
     <LinearLayout
+        android:id="@+id/lay_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_centerInParent="true"
         android:layout_marginHorizontal="10dp"
         android:padding="30dp"
-        android:background="@drawable/bg_edit">
+        android:background="@drawable/bg_edit"
+        android:visibility="invisible">
 
         <TextView
             android:id="@+id/tv_name"
@@ -126,5 +135,16 @@
         </RelativeLayout>
 
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/lay_card"
+        android:text="@string/near_by_phone"
+        android:textColor="@color/white"
+        android:layout_marginTop="20dp"
+        android:textSize="@dimen/text_size_14"/>
+
 
 </RelativeLayout>
