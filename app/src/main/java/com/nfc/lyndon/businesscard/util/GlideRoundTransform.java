@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
@@ -69,7 +70,12 @@ public class GlideRoundTransform extends BitmapTransformation {
         Path path = new Path();
         drawRoundRect(canvas, paint, path, width, height);
 
-        return result;
+        Matrix matrix = new Matrix();
+
+        matrix.postRotate(90);
+
+        return Bitmap.createBitmap(result, 0, 0, result.getWidth(),
+                result.getHeight(), matrix, true);
     }
 
     private void drawRoundRect(Canvas canvas, Paint paint, Path path, int width, int height) {

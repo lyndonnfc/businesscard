@@ -11,12 +11,18 @@ import android.nfc.NfcEvent;
 import android.nfc.NfcManager;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.view.Gravity;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.nfc.lyndon.businesscard.R;
 import com.nfc.lyndon.businesscard.base.MvpActivity;
 import com.nfc.lyndon.businesscard.entity.CardEntity;
@@ -70,8 +76,8 @@ public class TransferActivity extends MvpActivity<TransferPresenter, TransferMod
         if (content != null) {
             CardEntity cardEntity = JSON.parseObject(content, CardEntity.class);
             if (cardEntity != null) {
-                Glide.with(this).load(cardEntity.getCardUrl()).apply(new RequestOptions()
-                        .transform(new GlideRoundTransform(this,
+                Glide.with(this).load(cardEntity.getCardUrl())
+                        .apply(new RequestOptions().transform(new GlideRoundTransform(this,
                                 ScreenUtils.dip2px(this,6f),
                                 GlideRoundTransform.CornerType.ALL)))
                         .into(ivCard);
