@@ -110,7 +110,7 @@ public class TransferActivity extends MvpActivity<TransferPresenter, TransferMod
 
     @Override
     public void initView() {
-        tvTitle.setText("NFC递名片");
+        tvTitle.setText(R.string.send_card_use_nfc);
     }
 
     @Override
