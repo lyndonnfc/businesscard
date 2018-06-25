@@ -7,115 +7,163 @@
     android:background="@drawable/bg_welcome"
     tools:context=".ui.fragment.SendCardFragment">
 
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
         android:id="@+id/lay_top"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-    <RelativeLayout
-        android:id="@+id/lay_base"
-        android:layout_width="match_parent"
-        android:layout_height="164dp"
-        android:background="@drawable/bg_light_green_corner"
-        android:layout_marginTop="122dp"
-        android:layout_marginHorizontal="38dp"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="60dp"
+        android:padding="30dp"
+        android:background="@drawable/bg_edit"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:layout_centerHorizontal="true"
-            android:text="范冰冰"
-            android:textColor="@color/text_color_333"
+            android:textColor="@color/blue"
             android:textSize="@dimen/sp_20"/>
 
         <TextView
             android:id="@+id/tv_position"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_name"
-            android:layout_marginTop="4dp"
-            android:layout_centerHorizontal="true"
-            android:text="创意总监/Creative Director"
-            android:textSize="@dimen/sp_12"
-            android:textColor="@color/text_color_333"/>
-
-        <TextView
-            android:id="@+id/tv_company"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_position"
             android:layout_marginTop="10dp"
-            android:layout_centerHorizontal="true"
-            android:text="深圳市腾讯计算机系统有限公司"
-            android:textSize="@dimen/sp_14"
-            android:textColor="@color/text_color_333"/>
+            android:textColor="@color/blue"
+            android:textSize="@dimen/text_size_14"/>
 
-        <TextView
-            android:id="@+id/tv_company_en"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_company"
-            android:textSize="@dimen/sp_12"
-            android:gravity="center"
-            android:layout_centerHorizontal="true"
-            android:text="Shenzhen City Tencent computer system Co.Ltd."
-            android:layout_marginTop="4dp"
-            android:textColor="@color/text_color_333"/>
+            android:layout_marginTop="20dp">
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/tv_phone_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/blue"
+                android:text="@string/phone"
+                android:textSize="@dimen/text_size_14"/>
 
-    <ImageView
-        android:id="@+id/iv_avatar"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="72dp"
-        android:src="@drawable/default_avatar"
-        android:contentDescription="@string/avatar"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+            <TextView
+                android:id="@+id/tv_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_toEndOf="@id/tv_phone_tag"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/text_size_14"/>
+        </RelativeLayout>
 
-    </android.support.constraint.ConstraintLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp">
+
+            <TextView
+                android:id="@+id/tv_company_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/company"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/text_size_14"/>
+
+            <TextView
+                android:id="@+id/tv_company"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_toEndOf="@id/tv_company_tag"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/text_size_14"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp">
+
+            <TextView
+                android:id="@+id/tv_email_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/blue"
+                android:text="@string/email"
+                android:textSize="@dimen/text_size_14"/>
+
+            <TextView
+                android:id="@+id/tv_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_toEndOf="@id/tv_email_tag"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/text_size_14"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp">
+
+            <TextView
+                android:id="@+id/tv_address_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/blue"
+                android:text="@string/address"
+                android:textSize="@dimen/text_size_14"/>
+
+            <TextView
+                android:id="@+id/tv_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_toEndOf="@id/tv_address_tag"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/text_size_14"/>
+        </RelativeLayout>
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tv_trans_nfc"
         style="@style/TextViewCommonStyle"
         android:drawableStart="@drawable/icon_deliver"
         android:text="@string/send_card_use_nfc"
-        app:layout_constraintTop_toBottomOf="@id/lay_top"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/lay_top" />
 
     <TextView
         android:id="@+id/tv_share"
         style="@style/TextViewCommonStyle"
         android:drawableStart="@drawable/icon_share"
         android:text="@string/share_card"
-        app:layout_constraintTop_toBottomOf="@id/tv_trans_nfc"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/tv_trans_nfc" />
 
     <TextView
         android:id="@+id/tv_edit"
         style="@style/TextViewCommonStyle"
         android:drawableStart="@drawable/icon_compile"
         android:text="@string/edit_card"
-        app:layout_constraintTop_toBottomOf="@id/tv_share"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/tv_share" />
 
-    <include layout="@layout/layout_create_card"
+    <include
+        layout="@layout/layout_create_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:visibility="gone"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

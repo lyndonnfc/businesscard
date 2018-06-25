@@ -1,6 +1,7 @@
 package com.nfc.lyndon.businesscard.ui.fragment;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.nfc.NfcAdapter;
@@ -10,7 +11,7 @@ import android.support.constraint.ConstraintLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -41,18 +42,6 @@ import permissions.dispatcher.RuntimePermissions;
 public class SendCardFragment extends BaseFragment<SendCardPresenter, SendCardModel> implements
         SendCardContract.SendCardView {
 
-    @BindView(R.id.tv_name)
-    TextView tvName;
-    @BindView(R.id.tv_position)
-    TextView tvPosition;
-    @BindView(R.id.tv_company)
-    TextView tvCompany;
-    @BindView(R.id.tv_company_en)
-    TextView tvCompanyEn;
-    @BindView(R.id.lay_base)
-    RelativeLayout layBase;
-    @BindView(R.id.iv_avatar)
-    ImageView ivAvatar;
     @BindView(R.id.tv_trans_nfc)
     TextView tvTransNfc;
     @BindView(R.id.tv_share)
@@ -68,8 +57,20 @@ public class SendCardFragment extends BaseFragment<SendCardPresenter, SendCardMo
     @BindView(R.id.tv_create_desc)
     TextView tvCreateDesc;
     @BindView(R.id.lay_top)
-    ConstraintLayout layTop;
+    LinearLayout layTop;
     Unbinder unbinder;
+    @BindView(R.id.tv_name)
+    TextView tvName;
+    @BindView(R.id.tv_position)
+    TextView tvPosition;
+    @BindView(R.id.tv_phone)
+    TextView tvPhone;
+    @BindView(R.id.tv_company)
+    TextView tvCompany;
+    @BindView(R.id.tv_email)
+    TextView tvEmail;
+    @BindView(R.id.tv_address)
+    TextView tvAddress;
 
     private CardEntity cardEntity;
 
@@ -80,8 +81,7 @@ public class SendCardFragment extends BaseFragment<SendCardPresenter, SendCardMo
 
     @Override
     protected void initView() {
-        ivAvatar.setVisibility(View.GONE);
-        layBase.setVisibility(View.GONE);
+        layTop.setVisibility(View.GONE);
         tvTransNfc.setVisibility(View.GONE);
         tvShare.setVisibility(View.GONE);
         tvEdit.setVisibility(View.GONE);
@@ -138,32 +138,30 @@ public class SendCardFragment extends BaseFragment<SendCardPresenter, SendCardMo
         }
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void showData(CardEntity cardEntity) {
         this.cardEntity = new CardEntity();
         this.cardEntity = cardEntity;
-        ivAvatar.setVisibility(View.VISIBLE);
-        layBase.setVisibility(View.VISIBLE);
+        layTop.setVisibility(View.VISIBLE);
         tvTransNfc.setVisibility(View.VISIBLE);
         tvShare.setVisibility(View.VISIBLE);
         tvEdit.setVisibility(View.VISIBLE);
         layCreateCard.setVisibility(View.GONE);
-        Glide.with(mContext)
-                .load(cardEntity.getCardUrl())
-                .apply(new RequestOptions().circleCrop())
-                .into(ivAvatar);
         tvName.setText(cardEntity.getRealName());
-        tvPosition.setText(cardEntity.getPosition());
+        tvPosition.setText(cardEntity.getDepartment() + "    " + cardEntity.getPosition());
+        tvPhone.setText(cardEntity.getPhone());
+        tvEmail.setText(cardEntity.getEmail());
+        tvAddress.setText(cardEntity.getAddress());
         tvCompany.setText(cardEntity.getCompanyName());
-        tvCompanyEn.setText(cardEntity.getEnglishCompanyName());
+
         PreferenceManager.getInstance().setString(PreferenceManager.EMAIL,
                 cardEntity.getEmail());
     }
 
     @Override
     public void failed(String message) {
-        ivAvatar.setVisibility(View.GONE);
-        layBase.setVisibility(View.GONE);
+        layTop.setVisibility(View.GONE);
         tvTransNfc.setVisibility(View.GONE);
         tvShare.setVisibility(View.GONE);
         tvEdit.setVisibility(View.GONE);
@@ -188,6 +186,7 @@ public class SendCardFragment extends BaseFragment<SendCardPresenter, SendCardMo
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        assert rootView != null;
         unbinder = ButterKnife.bind(this, rootView);
         return rootView;
     }

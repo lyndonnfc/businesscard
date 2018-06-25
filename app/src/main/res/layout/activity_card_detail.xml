@@ -23,7 +23,9 @@
                 android:id="@+id/iv_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"/>
+                android:layout_marginHorizontal="4dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="20dp"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -43,10 +45,10 @@
 
                 <TextView
                     android:id="@+id/tv_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_toEndOf="@id/tv_name_tag"
-                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
                     android:layout_marginStart="@dimen/dp_30"
                     android:textColor="@color/text_color_333"
                     android:textSize="@dimen/text_size_14"/>
@@ -75,10 +77,10 @@
 
                 <TextView
                     android:id="@+id/tv_position"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_toEndOf="@id/tv_position_tag"
-                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
                     android:layout_marginStart="@dimen/dp_30"
                     android:textColor="@color/text_color_333"
                     android:textSize="@dimen/text_size_14"/>
@@ -107,10 +109,10 @@
 
                 <TextView
                     android:id="@+id/tv_department"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_toEndOf="@id/tv_department_tag"
-                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
                     android:layout_marginStart="@dimen/dp_30"
                     android:textColor="@color/text_color_333"
                     android:textSize="@dimen/text_size_14"/>
@@ -139,11 +141,11 @@
 
                 <TextView
                     android:id="@+id/tv_company"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_toEndOf="@id/tv_company_tag"
-                    android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/dp_30"
+                    android:gravity="center_vertical"
                     android:textColor="@color/text_color_333"
                     android:textSize="@dimen/text_size_14"/>
             </RelativeLayout>
@@ -168,10 +170,10 @@
 
                 <TextView
                     android:id="@+id/tv_phone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_toEndOf="@id/tv_phone_tag"
-                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
                     android:layout_marginStart="@dimen/dp_30"
                     android:textColor="@color/text_color_333"
                     android:textSize="@dimen/text_size_14"
@@ -206,10 +208,10 @@
 
                 <TextView
                     android:id="@+id/tv_email"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_toEndOf="@id/tv_email_tag"
-                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
                     android:layout_marginStart="@dimen/dp_30"
                     android:textColor="@color/text_color_333"
                     android:textSize="@dimen/text_size_14"
@@ -248,10 +250,11 @@
 
                 <TextView
                     android:id="@+id/tv_address"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:minHeight="@dimen/dp_40"
+                    android:gravity="center_vertical"
                     android:layout_toEndOf="@id/tv_address_tag"
-                    android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/dp_30"
                     android:textColor="@color/text_color_333"
                     android:textSize="@dimen/text_size_14"/>

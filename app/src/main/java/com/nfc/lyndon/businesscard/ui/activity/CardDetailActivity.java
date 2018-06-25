@@ -171,7 +171,6 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
     @Override
     public void hidLoading() {
         hidDialog();
-
     }
 
     @Override
