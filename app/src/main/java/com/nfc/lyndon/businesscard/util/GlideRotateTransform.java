@@ -19,7 +19,7 @@ import java.security.MessageDigest;
  * Created by Administrator on 2018/3/9 0009.
  */
 
-public class GlideRoundTransform extends BitmapTransformation {
+public class GlideRotateTransform extends BitmapTransformation {
 
     private float mRadius;
     private CornerType mCornerType;
@@ -38,7 +38,7 @@ public class GlideRoundTransform extends BitmapTransformation {
         TOP_RIGHT_BOTTOM_RIGHT_BOTTOM_LEFT,
     }
 
-    public GlideRoundTransform(Context context, float radius, CornerType cornerType) {
+    public GlideRotateTransform(Context context, float radius, CornerType cornerType) {
         super();
         mRadius = ScreenUtils.dip2px(context, radius);//dp ->px
         mCornerType = cornerType;
@@ -70,7 +70,12 @@ public class GlideRoundTransform extends BitmapTransformation {
         Path path = new Path();
         drawRoundRect(canvas, paint, path, width, height);
 
-        return result;
+        Matrix matrix = new Matrix();
+
+        matrix.postRotate(90);
+
+        return Bitmap.createBitmap(result, 0, 0, result.getWidth(),
+                result.getHeight(), matrix, true);
     }
 
     private void drawRoundRect(Canvas canvas, Paint paint, Path path, int width, int height) {
@@ -144,7 +149,7 @@ public class GlideRoundTransform extends BitmapTransformation {
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof GlideRoundTransform;
+        return o instanceof GlideRotateTransform;
     }
 
 

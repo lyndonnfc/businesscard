@@ -21,7 +21,8 @@
                 android:id="@+id/lay_head"
                 android:layout_width="match_parent"
                 android:background="@color/blue"
-                android:layout_height="@dimen/detail_head_height">
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/detail_head_height">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -32,8 +33,8 @@
                 <com.github.chrisbanes.photoview.PhotoView
                     android:id="@+id/iv_font"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/detail_head_height"
-                    android:scaleType="centerCrop"/>
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"/>
 
             </RelativeLayout>
 

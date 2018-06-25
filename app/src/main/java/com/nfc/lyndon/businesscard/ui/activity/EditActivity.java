@@ -24,6 +24,7 @@ import com.nfc.lyndon.businesscard.model.EditModel;
 import com.nfc.lyndon.businesscard.presenter.EditPresenter;
 import com.nfc.lyndon.businesscard.util.AppUtils;
 import com.nfc.lyndon.businesscard.util.CheckUtils;
+import com.nfc.lyndon.businesscard.util.GlideRoundTransform;
 import com.nfc.lyndon.businesscard.util.StringUtils;
 import com.nfc.lyndon.businesscard.util.ToastUtils;
 import com.nfc.lyndon.businesscard.widget.PictureSelectorDialog;
@@ -160,6 +161,10 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
             logo = cardEntity.getCardUrl();
             Glide.with(mContext)
                     .load(cardEntity.getCardUrl())
+                    .apply(new RequestOptions()
+                            .fitCenter()
+                            .transform(new GlideRoundTransform(this, 4,
+                                    GlideRoundTransform.CornerType.ALL)))
                     .into(ivFont);
             etName.setText(cardEntity.getRealName());
             etCompany.setText(cardEntity.getCompanyName());
@@ -218,10 +223,10 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case CameraActivity.REQUEST_CODE:
-                    if (data != null){
+                    if (data != null) {
                         String path = data.getStringExtra("path");
                         File file = new File(path);
-                        if (!file.exists()){
+                        if (!file.exists()) {
                             ToastUtils.toastShort("文件不存在");
                             return;
                         }

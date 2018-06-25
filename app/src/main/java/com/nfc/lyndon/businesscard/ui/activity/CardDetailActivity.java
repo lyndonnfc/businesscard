@@ -24,6 +24,8 @@ import com.nfc.lyndon.businesscard.manager.PreferenceManager;
 import com.nfc.lyndon.businesscard.model.DetailModel;
 import com.nfc.lyndon.businesscard.presenter.DetailPresenter;
 import com.nfc.lyndon.businesscard.util.BitmapUtils;
+import com.nfc.lyndon.businesscard.util.GlideRoundTransform;
+import com.nfc.lyndon.businesscard.util.ScreenUtils;
 import com.nfc.lyndon.businesscard.util.ToastUtils;
 import com.nfc.lyndon.businesscard.widget.ConfirmOrCancelDialog;
 
@@ -178,6 +180,10 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
         this.cardEntity = cardEntity;
         Glide.with(mContext)
                 .load(cardEntity.getCardUrl())
+                .apply(new RequestOptions()
+                        .fitCenter()
+                        .transform(new GlideRoundTransform(this, 6,
+                                GlideRoundTransform.CornerType.ALL)))
                 .into(ivCard);
         tvName.setText(cardEntity.getRealName());
         tvPosition.setText(cardEntity.getPosition());

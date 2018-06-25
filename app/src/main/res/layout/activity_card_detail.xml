@@ -22,8 +22,8 @@
             <com.github.chrisbanes.photoview.PhotoView
                 android:id="@+id/iv_card"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/detail_head_height"
-                android:scaleType="centerCrop"/>
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
