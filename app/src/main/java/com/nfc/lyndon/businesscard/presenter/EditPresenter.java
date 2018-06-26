@@ -19,6 +19,7 @@ import com.nfc.lyndon.businesscard.R;
 import com.nfc.lyndon.businesscard.app.Constants;
 import com.nfc.lyndon.businesscard.base.BaseResponse;
 import com.nfc.lyndon.businesscard.contract.EditContract;
+import com.nfc.lyndon.businesscard.entity.CardEntity;
 import com.nfc.lyndon.businesscard.entity.UploadEntity;
 import com.nfc.lyndon.businesscard.util.ToastUtils;
 import com.nfc.lyndon.businesscard.util.WeakHandler;
@@ -46,11 +47,11 @@ public class EditPresenter extends EditContract.EditPresenter {
                     break;
                 case HANDLER_CREATE_SUCCESS:
                     ToastUtils.toastShort((String) msg.obj);
-                    ((Activity)mContext).finish();
+                    ((Activity) mContext).finish();
                     break;
                 case HANDLER_UPDATE_SUCCESS:
                     ToastUtils.toastShort((String) msg.obj);
-                    ((Activity)mContext).finish();
+                    ((Activity) mContext).finish();
                     break;
                 case HANDLER_FAILED:
                     ToastUtils.toastShort((String) msg.obj);
@@ -102,7 +103,7 @@ public class EditPresenter extends EditContract.EditPresenter {
             @Override
             public void onStart(Request<String, ? extends Request> request) {
                 super.onStart(request);
-                mView.showLoading("正在上传...");
+                mView.showLoading("正在生成名片...");
             }
         });
     }
@@ -196,5 +197,30 @@ public class EditPresenter extends EditContract.EditPresenter {
                 });
     }
 
+    /**
+     * 数据是否改变
+     * @param realName 姓名
+     * @param mobile 手机
+     * @param position 职位
+     * @param department 部门
+     * @param company 公司
+     * @param email 邮箱
+     * @param address 地址
+     * @param cardEntity 原名片
+     * @return
+     */
+    public boolean noChange(String realName, String mobile, String position, String department,
+                            String company, String email, String address, CardEntity cardEntity) {
 
+        if (cardEntity == null)
+            return false;
+
+        return (realName.equals(cardEntity.getRealName())
+                && mobile.equals(cardEntity.getPhone())
+                && position.equals(cardEntity.getPosition())
+                && department.equals(cardEntity.getDepartment())
+                && company.equals(cardEntity.getCompanyName())
+                && email.equals(cardEntity.getEmail())
+                && address.equals(cardEntity.getAddress()));
+    }
 }

@@ -10,6 +10,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.nfc.lyndon.businesscard.R;
 import com.nfc.lyndon.businesscard.entity.CardEntity;
 import com.nfc.lyndon.businesscard.model.CardModel;
+import com.nfc.lyndon.businesscard.util.GlideRoundTransform;
 
 import java.util.List;
 
@@ -23,7 +24,8 @@ public class CardAdapter extends BaseQuickAdapter<CardEntity, BaseViewHolder> {
     protected void convert(BaseViewHolder helper, CardEntity item) {
         Glide.with(mContext)
                 .load(item.getCardUrl())
-                .apply(new RequestOptions().circleCrop().error(R.drawable.default_avatar))
+                .apply(new RequestOptions().transform(new GlideRoundTransform(mContext, 6,
+                        GlideRoundTransform.CornerType.ALL)))
                 .into((ImageView) helper.getView(R.id.iv_avatar));
 
         helper.setText(R.id.tv_name, item.getRealName());

@@ -4,18 +4,19 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.nfc.lyndon.businesscard.R;
-import com.nfc.lyndon.businesscard.app.Constants;
 import com.nfc.lyndon.businesscard.base.MvpActivity;
 import com.nfc.lyndon.businesscard.contract.EditContract;
 import com.nfc.lyndon.businesscard.entity.CardEntity;
@@ -23,9 +24,8 @@ import com.nfc.lyndon.businesscard.manager.PreferenceManager;
 import com.nfc.lyndon.businesscard.model.EditModel;
 import com.nfc.lyndon.businesscard.presenter.EditPresenter;
 import com.nfc.lyndon.businesscard.util.AppUtils;
-import com.nfc.lyndon.businesscard.util.CheckUtils;
+import com.nfc.lyndon.businesscard.util.BitmapUtils;
 import com.nfc.lyndon.businesscard.util.GlideRoundTransform;
-import com.nfc.lyndon.businesscard.util.StringUtils;
 import com.nfc.lyndon.businesscard.util.ToastUtils;
 import com.nfc.lyndon.businesscard.widget.PictureSelectorDialog;
 import com.nfc.lyndon.businesscard.widget.ProgressDialog;
@@ -65,6 +65,30 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
     EditText etEmail;
     @BindView(R.id.et_address)
     EditText etAddress;
+    @BindView(R.id.tv_name)
+    TextView tvName;
+    @BindView(R.id.tv_position)
+    TextView tvPosition;
+    @BindView(R.id.tv_phone_tag)
+    TextView tvPhoneTag;
+    @BindView(R.id.tv_phone)
+    TextView tvPhone;
+    @BindView(R.id.tv_company_tag)
+    TextView tvCompanyTag;
+    @BindView(R.id.tv_company)
+    TextView tvCompany;
+    @BindView(R.id.tv_email_tag)
+    TextView tvEmailTag;
+    @BindView(R.id.tv_email)
+    TextView tvEmail;
+    @BindView(R.id.tv_address_tag)
+    TextView tvAddressTag;
+    @BindView(R.id.tv_address)
+    TextView tvAddress;
+    @BindView(R.id.lay_top)
+    LinearLayout layTop;
+    @BindView(R.id.tv_department)
+    TextView tvDepartment;
     private boolean isCreate;
 
     private long cardId;
@@ -77,6 +101,14 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
 
     private CardEntity cardEntity;
 
+    private String realName;
+    private String company;
+    private String department;
+    private String position;
+    private String mobile;
+    private String email;
+    private String address;
+
     public static void startActivity(Context context, Bundle bundle) {
         Intent intent = new Intent(context, EditActivity.class);
         intent.putExtras(bundle);
@@ -88,6 +120,14 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         showData();
+
+        etName.addTextChangedListener(new EditTextWatcher(etName, tvName));
+        etDepartment.addTextChangedListener(new EditTextWatcher(etDepartment, tvDepartment));
+        etPosition.addTextChangedListener(new EditTextWatcher(etPosition, tvPosition));
+        etMobile.addTextChangedListener(new EditTextWatcher(etMobile, tvPhoneTag, tvPhone));
+        etCompany.addTextChangedListener(new EditTextWatcher(etCompany, tvCompanyTag, tvCompany));
+        etEmail.addTextChangedListener(new EditTextWatcher(etEmail, tvEmailTag, tvEmail));
+        etAddress.addTextChangedListener(new EditTextWatcher(etAddress, tvAddressTag, tvAddress));
     }
 
     @Override
@@ -131,27 +171,24 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
                 EditActivityPermissionsDispatcher.takePhotoWithPermissionCheck(this);
                 break;
             case R.id.tv_right:
-                String realName = etName.getText().toString();
-                String company = etCompany.getText().toString();
-                String department = etDepartment.getText().toString();
-                String position = etPosition.getText().toString();
-                String mobile = etMobile.getText().toString();
-                String email = etEmail.getText().toString();
-                String address = etAddress.getText().toString();
+                realName = etName.getText().toString();
+                company = etCompany.getText().toString();
+                department = etDepartment.getText().toString();
+                position = etPosition.getText().toString();
+                mobile = etMobile.getText().toString();
+                email = etEmail.getText().toString();
+                address = etAddress.getText().toString();
 
+                if (mPresenter.noChange(realName, mobile, position, department, company, email, address, cardEntity)) {
+                    ToastUtils.toastShort("名片没有改变");
+                    return;
+                }
                 if (TextUtils.isEmpty(realName)) {
                     ToastUtils.toastShort("请输入姓名");
                     return;
                 }
 
-                if (isCreate) {
-                    mPresenter.createCard(PreferenceManager.getInstance().getLong(PreferenceManager.UID),
-                            isSelf, logo, realName, mobile, position, department, company, email, address);
-                } else {
-                    mPresenter.editCard(cardId, PreferenceManager.getInstance().getLong(PreferenceManager.UID),
-                            logo, realName, mobile, position, department, company, email, address);
-                }
-
+                EditActivityPermissionsDispatcher.shareWithPermissionCheck(this, layTop);
                 break;
         }
     }
@@ -173,6 +210,26 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
             etMobile.setText(cardEntity.getPhone());
             etEmail.setText(cardEntity.getEmail());
             etAddress.setText(cardEntity.getAddress());
+            tvName.setText(cardEntity.getRealName());
+            tvDepartment.setText(cardEntity.getDepartment());
+            tvPosition.setText(cardEntity.getPosition());
+
+            if (!TextUtils.isEmpty(cardEntity.getCompanyName())) {
+                tvCompanyTag.setVisibility(View.VISIBLE);
+                tvCompany.setText(cardEntity.getCompanyName());
+            }
+            if (!TextUtils.isEmpty(cardEntity.getPhone())) {
+                tvPhoneTag.setVisibility(View.VISIBLE);
+                tvPhone.setText(cardEntity.getPhone());
+            }
+            if (!TextUtils.isEmpty(cardEntity.getEmail())) {
+                tvEmailTag.setVisibility(View.VISIBLE);
+                tvEmail.setText(cardEntity.getEmail());
+            }
+            if (!TextUtils.isEmpty(cardEntity.getAddress())) {
+                tvAddressTag.setVisibility(View.VISIBLE);
+                tvAddress.setText(cardEntity.getAddress());
+            }
         }
     }
 
@@ -182,6 +239,13 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
         Glide.with(mContext)
                 .load(imgUrl)
                 .into(ivFont);
+        if (isCreate) {
+            mPresenter.createCard(PreferenceManager.getInstance().getLong(PreferenceManager.UID),
+                    isSelf, logo, realName, mobile, position, department, company, email, address);
+        } else {
+            mPresenter.editCard(cardId, PreferenceManager.getInstance().getLong(PreferenceManager.UID),
+                    logo, realName, mobile, position, department, company, email, address);
+        }
     }
 
     @Override
@@ -217,6 +281,11 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
         AppUtils.openAlbumPage(this);
     }
 
+    @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE})
+    public void share(View v) {
+        mPresenter.uploadLogo(new File(BitmapUtils.getImageAbsolutePath(mContext, BitmapUtils.getUri(v, mContext))));
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -234,6 +303,53 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
                     }
                     break;
             }
+        }
+    }
+
+    /**
+     * EditText 监听
+     */
+    class EditTextWatcher implements TextWatcher {
+
+        private EditText editText;
+        private TextView tvTitle;
+        private TextView tvContent;
+
+        private EditTextWatcher(EditText editText, TextView tvContent) {
+            this.editText = editText;
+            this.tvContent = tvContent;
+            this.editText.addTextChangedListener(this);
+        }
+
+        private EditTextWatcher(EditText editText, TextView tvTitle, TextView tvContent) {
+            this.editText = editText;
+            this.tvTitle = tvTitle;
+            this.tvContent = tvContent;
+            this.editText.addTextChangedListener(this);
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (TextUtils.isEmpty(s.toString())) {
+                if (tvTitle != null)
+                    tvTitle.setVisibility(View.INVISIBLE);
+                tvContent.setVisibility(View.INVISIBLE);
+            } else {
+                if (tvTitle != null)
+                    tvTitle.setVisibility(View.VISIBLE);
+                tvContent.setVisibility(View.VISIBLE);
+                tvContent.setText(s.toString());
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
         }
     }
 }
