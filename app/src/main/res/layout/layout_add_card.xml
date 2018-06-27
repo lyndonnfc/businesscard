@@ -40,7 +40,8 @@
         android:layout_marginTop="8dp"
         android:textColor="@color/text_color_333"
         android:textSize="@dimen/sp_12"
-        android:text="@string/use_camera_desc"/>
+        android:text="@string/use_camera_desc"
+        android:visibility="invisible"/>
 
     <ImageView
         android:id="@+id/iv_input"
@@ -72,6 +73,7 @@
         android:layout_marginTop="8dp"
         android:textColor="@color/text_color_333"
         android:textSize="@dimen/sp_12"
-        android:text="@string/use_hand_desc"/>
+        android:text="@string/use_hand_desc"
+        android:visibility="invisible"/>
 
 </android.support.constraint.ConstraintLayout>
