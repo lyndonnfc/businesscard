@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -25,7 +24,6 @@ import com.nfc.lyndon.businesscard.model.DetailModel;
 import com.nfc.lyndon.businesscard.presenter.DetailPresenter;
 import com.nfc.lyndon.businesscard.util.BitmapUtils;
 import com.nfc.lyndon.businesscard.util.GlideRoundTransform;
-import com.nfc.lyndon.businesscard.util.ScreenUtils;
 import com.nfc.lyndon.businesscard.util.ToastUtils;
 import com.nfc.lyndon.businesscard.widget.ConfirmOrCancelDialog;
 
@@ -64,6 +62,22 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
     TextView tvRight;
     @BindView(R.id.iv_card)
     PhotoView ivCard;
+    @BindView(R.id.tv_name_t)
+    TextView tvNameT;
+    @BindView(R.id.tv_position_t)
+    TextView tvPositionT;
+    @BindView(R.id.tv_department_t)
+    TextView tvDepartmentT;
+    @BindView(R.id.tv_company_t)
+    TextView tvCompanyT;
+    @BindView(R.id.tv_phone_t)
+    TextView tvPhoneT;
+    @BindView(R.id.tv_email_t)
+    TextView tvEmailT;
+    @BindView(R.id.tv_address_t)
+    TextView tvAddressT;
+    @BindView(R.id.lay_card)
+    LinearLayout layCard;
 
     private long id;
 
@@ -105,7 +119,7 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
                 finish();
                 break;
             case R.id.tv_right:
-                CardDetailActivityPermissionsDispatcher.shareWithPermissionCheck(this, layTop);
+                CardDetailActivityPermissionsDispatcher.shareWithPermissionCheck(this, layCard);
                 break;
             case R.id.tv_edit:
                 Bundle bundle = new Bundle();
@@ -191,6 +205,13 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
         tvDepartment.setText(cardEntity.getDepartment());
         tvEmail.setText(cardEntity.getEmail());
         tvAddress.setText(cardEntity.getAddress());
+        tvNameT.setText(cardEntity.getRealName());
+        tvPositionT.setText(cardEntity.getPosition());
+        tvCompanyT.setText(cardEntity.getCompanyName());
+        tvPhoneT.setText(cardEntity.getPhone());
+        tvDepartmentT.setText(cardEntity.getDepartment());
+        tvEmailT.setText(cardEntity.getEmail());
+        tvAddressT.setText(cardEntity.getAddress());
     }
 
     @Override

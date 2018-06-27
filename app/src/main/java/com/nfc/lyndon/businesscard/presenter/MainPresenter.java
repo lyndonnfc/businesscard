@@ -20,23 +20,42 @@ public class MainPresenter extends MainContract.MainPresenter{
     private FragmentTransaction fragmentTransaction;
 
     public void initFragment(FragmentActivity context){
-        cardListFragment = new CardListFragment();
-        sendCardFragment = new SendCardFragment();
         fragmentManager = context.getSupportFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.layout_content, cardListFragment);
-        fragmentTransaction.commitAllowingStateLoss();
+        replaceList();
     }
 
     public void replaceList(){
         fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.layout_content, cardListFragment);
+        hindFragment(fragmentTransaction);
+        if (cardListFragment == null){
+            cardListFragment = new CardListFragment();
+            fragmentTransaction.add(R.id.layout_content, cardListFragment);
+        } else {
+            fragmentTransaction.show(cardListFragment);
+        }
         fragmentTransaction.commitAllowingStateLoss();
     }
 
     public void replaceSend(){
         fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.layout_content, sendCardFragment);
+        hindFragment(fragmentTransaction);
+        if (sendCardFragment == null){
+            sendCardFragment = new SendCardFragment();
+            fragmentTransaction.add(R.id.layout_content, sendCardFragment);
+        } else {
+            fragmentTransaction.show(sendCardFragment);
+        }
         fragmentTransaction.commitAllowingStateLoss();
     }
+
+    //隐藏所有Fragment
+    private void hindFragment(FragmentTransaction fragmentTransaction) {
+        if (cardListFragment != null) {
+            fragmentTransaction.hide(cardListFragment);
+        }
+        if (sendCardFragment != null) {
+            fragmentTransaction.hide(sendCardFragment);
+        }
+    }
+
 }

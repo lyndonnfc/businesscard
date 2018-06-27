@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -47,10 +48,12 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
 
     @BindView(R.id.tv_title)
     TextView tvTitle;
-    @BindView(R.id.tv_right)
-    TextView tvRight;
+    @BindView(R.id.iv_right)
+    ImageView ivRight;
     @BindView(R.id.iv_font)
     PhotoView ivFont;
+    @BindView(R.id.iv_camera)
+    ImageView ivCamera;
     @BindView(R.id.et_name)
     EditText etName;
     @BindView(R.id.et_position)
@@ -133,13 +136,18 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
     @Override
     public void initView() {
         tvTitle.setText("编辑名片");
-        tvRight.setText("完成");
+        ivRight.setImageResource(R.drawable.ic_camera);
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             isCreate = bundle.getBoolean("isCreate");
             isSelf = bundle.getBoolean("isSelf");
             if (!isCreate) {
                 cardId = bundle.getLong("cardId");
+                ivCamera.setVisibility(View.GONE);
+                ivRight.setVisibility(View.VISIBLE);
+            } else {
+                ivCamera.setVisibility(View.VISIBLE);
+                ivRight.setVisibility(View.GONE);
             }
             cardEntity = (CardEntity) bundle.getSerializable("cardInfo");
         }
@@ -160,7 +168,7 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
         return new EditModel();
     }
 
-    @OnClick({R.id.iv_back, R.id.tv_right, R.id.iv_font, R.id.lay_head})
+    @OnClick({R.id.iv_back, R.id.iv_right, R.id.iv_font, R.id.lay_head, R.id.btn_save})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_back:
@@ -168,9 +176,10 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
                 break;
             case R.id.iv_font:
             case R.id.lay_head:
+            case R.id.iv_right:
                 EditActivityPermissionsDispatcher.takePhotoWithPermissionCheck(this);
                 break;
-            case R.id.tv_right:
+            case R.id.btn_save:
                 realName = etName.getText().toString();
                 company = etCompany.getText().toString();
                 department = etDepartment.getText().toString();
@@ -246,6 +255,8 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
     @Override
     public void showLogo(String imgUrl) {
         logo = imgUrl;
+        ivCamera.setVisibility(View.GONE);
+        ivRight.setVisibility(View.VISIBLE);
 
         if (isCreate) {
             mPresenter.createCard(PreferenceManager.getInstance().getLong(PreferenceManager.UID),
@@ -379,7 +390,10 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
 
         @Override
         public void afterTextChanged(Editable s) {
-
+            if (ivCamera.getVisibility() == View.VISIBLE){
+                ivCamera.setVisibility(View.GONE);
+                ivRight.setVisibility(View.VISIBLE);
+            }
         }
     }
 }

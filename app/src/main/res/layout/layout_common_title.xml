@@ -34,4 +34,12 @@
         android:textSize="@dimen/sp_14"
         tools:ignore="RelativeOverlap" />
 
+    <ImageView
+        android:id="@+id/iv_right"
+        android:layout_width="@dimen/title_height"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:scaleType="centerInside"
+        android:padding="10dp"/>
+
 </RelativeLayout>

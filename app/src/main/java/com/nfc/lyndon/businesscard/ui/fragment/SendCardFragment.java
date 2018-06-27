@@ -191,6 +191,8 @@ public class SendCardFragment extends BaseFragment<SendCardPresenter, SendCardMo
         return rootView;
     }
 
+
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
