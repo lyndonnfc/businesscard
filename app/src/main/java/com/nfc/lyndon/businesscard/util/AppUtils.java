@@ -8,6 +8,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -16,6 +17,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.nfc.lyndon.businesscard.BuildConfig;
 import com.nfc.lyndon.businesscard.app.Constants;
@@ -229,5 +231,24 @@ public class AppUtils {
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(out));
         intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
         return intent;
+    }
+
+    /**
+     * 字体加粗
+     *
+     * @param textView
+     * @param isBold
+     */
+    public static void setTextBold(TextView textView, boolean isBold) {
+        try {
+            if (textView != null) {
+                Paint paint = textView.getPaint();
+                if (paint != null) {
+                    paint.setFakeBoldText(isBold);
+                }
+            }
+        } catch (Throwable var3) {
+            var3.fillInStackTrace();
+        }
     }
 }

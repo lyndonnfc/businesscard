@@ -25,6 +25,7 @@ import com.nfc.lyndon.businesscard.entity.CardEntity;
 import com.nfc.lyndon.businesscard.manager.PreferenceManager;
 import com.nfc.lyndon.businesscard.model.SendCardModel;
 import com.nfc.lyndon.businesscard.presenter.SendCardPresenter;
+import com.nfc.lyndon.businesscard.util.AppUtils;
 import com.nfc.lyndon.businesscard.util.BitmapUtils;
 import com.nfc.lyndon.businesscard.util.ToastUtils;
 
@@ -86,6 +87,7 @@ public class SendCardFragment extends BaseFragment<SendCardPresenter, SendCardMo
         tvShare.setVisibility(View.GONE);
         tvEdit.setVisibility(View.GONE);
         layCreateCard.setVisibility(View.VISIBLE);
+        AppUtils.setTextBold(tvName, true);
     }
 
     @Override

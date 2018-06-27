@@ -26,7 +26,9 @@ import com.nfc.lyndon.businesscard.model.EditModel;
 import com.nfc.lyndon.businesscard.presenter.EditPresenter;
 import com.nfc.lyndon.businesscard.util.AppUtils;
 import com.nfc.lyndon.businesscard.util.BitmapUtils;
+import com.nfc.lyndon.businesscard.util.CheckUtils;
 import com.nfc.lyndon.businesscard.util.GlideRoundTransform;
+import com.nfc.lyndon.businesscard.util.StringUtils;
 import com.nfc.lyndon.businesscard.util.ToastUtils;
 import com.nfc.lyndon.businesscard.widget.PictureSelectorDialog;
 import com.nfc.lyndon.businesscard.widget.ProgressDialog;
@@ -124,6 +126,8 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
         ButterKnife.bind(this);
         showData();
 
+        AppUtils.setTextBold(tvName, true);
+
         etName.addTextChangedListener(new EditTextWatcher(etName, tvName));
         etDepartment.addTextChangedListener(new EditTextWatcher(etDepartment, tvDepartment));
         etPosition.addTextChangedListener(new EditTextWatcher(etPosition, tvPosition));
@@ -194,6 +198,12 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
                 }
                 if (TextUtils.isEmpty(realName)) {
                     ToastUtils.toastShort("请输入姓名");
+                    return;
+                } else if (!TextUtils.isEmpty(mobile) && !StringUtils.isMobileNo(mobile)){
+                    ToastUtils.toastShort("请输入正确的手机");
+                    return;
+                } else if (!TextUtils.isEmpty(email) && !CheckUtils.isEmail(email)){
+                    ToastUtils.toastShort("请输入正确的邮箱");
                     return;
                 }
 

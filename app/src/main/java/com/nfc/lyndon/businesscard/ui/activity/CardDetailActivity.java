@@ -22,6 +22,7 @@ import com.nfc.lyndon.businesscard.entity.CardEntity;
 import com.nfc.lyndon.businesscard.manager.PreferenceManager;
 import com.nfc.lyndon.businesscard.model.DetailModel;
 import com.nfc.lyndon.businesscard.presenter.DetailPresenter;
+import com.nfc.lyndon.businesscard.util.AppUtils;
 import com.nfc.lyndon.businesscard.util.BitmapUtils;
 import com.nfc.lyndon.businesscard.util.GlideRoundTransform;
 import com.nfc.lyndon.businesscard.util.ToastUtils;
@@ -245,6 +246,7 @@ public class CardDetailActivity extends MvpActivity<DetailPresenter, DetailModel
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
+        AppUtils.setTextBold(tvNameT, true);
     }
 
 }
