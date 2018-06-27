@@ -1,5 +1,7 @@
 package com.nfc.lyndon.businesscard.entity;
 
+import android.util.Log;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Property;
@@ -92,12 +94,12 @@ public class CardEntity implements Serializable {
 
     @Generated(hash = 1746669704)
     public CardEntity(long id, long uid, String realName, String englishRealName,
-            String phone, String mobile, String position, String englishPostion,
-            String department, String englishDepartment, String companyName,
-            String englishCompanyName, String email, String postcode, String webUrl,
-            String fax, String qqAccount, String wechatAccount, String msnAccount,
-            String weiboAccount, String companyAccount, String address,
-            String englishAddress, String logo, String cardUrl, String otherMsg) {
+                      String phone, String mobile, String position, String englishPostion,
+                      String department, String englishDepartment, String companyName,
+                      String englishCompanyName, String email, String postcode, String webUrl,
+                      String fax, String qqAccount, String wechatAccount, String msnAccount,
+                      String weiboAccount, String companyAccount, String address,
+                      String englishAddress, String logo, String cardUrl, String otherMsg) {
         this.id = id;
         this.uid = uid;
         this.realName = realName;
@@ -336,5 +338,15 @@ public class CardEntity implements Serializable {
 
     public void setOtherMsg(String otherMsg) {
         this.otherMsg = otherMsg;
+    }
+
+    public boolean noResult(String result) {
+        return (!result.contains("realName") &&
+                !result.contains("phone") &&
+                !result.contains("position") &&
+                !result.contains("department") &&
+                !result.contains("companyName") &&
+                !result.contains("email") &&
+                !result.contains("address"));
     }
 }

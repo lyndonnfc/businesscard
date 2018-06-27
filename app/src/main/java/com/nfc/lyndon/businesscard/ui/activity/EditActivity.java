@@ -188,7 +188,17 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
                     return;
                 }
 
-                EditActivityPermissionsDispatcher.shareWithPermissionCheck(this, layTop);
+                if (TextUtils.isEmpty(logo))
+                    EditActivityPermissionsDispatcher.shareWithPermissionCheck(this, layTop);
+                else {
+                    if (isCreate) {
+                        mPresenter.createCard(PreferenceManager.getInstance().getLong(PreferenceManager.UID),
+                                isSelf, logo, realName, mobile, position, department, company, email, address);
+                    } else {
+                        mPresenter.editCard(cardId, PreferenceManager.getInstance().getLong(PreferenceManager.UID),
+                                logo, realName, mobile, position, department, company, email, address);
+                    }
+                }
                 break;
         }
     }
@@ -236,9 +246,7 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
     @Override
     public void showLogo(String imgUrl) {
         logo = imgUrl;
-        Glide.with(mContext)
-                .load(imgUrl)
-                .into(ivFont);
+
         if (isCreate) {
             mPresenter.createCard(PreferenceManager.getInstance().getLong(PreferenceManager.UID),
                     isSelf, logo, realName, mobile, position, department, company, email, address);
@@ -257,7 +265,29 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
 
     @Override
     public void hidLoading() {
-        dialog.dismiss();
+        if (dialog != null)
+            dialog.dismiss();
+    }
+
+    @Override
+    public void showData(CardEntity cardEntity) {
+        if (cardEntity != null) {
+            logo = cardEntity.getCardUrl();
+            Glide.with(mContext)
+                    .load(cardEntity.getCardUrl())
+                    .apply(new RequestOptions()
+                            .fitCenter()
+                            .transform(new GlideRoundTransform(this, 4,
+                                    GlideRoundTransform.CornerType.ALL)))
+                    .into(ivFont);
+            etName.setText(cardEntity.getRealName());
+            etCompany.setText(cardEntity.getCompanyName());
+            etDepartment.setText(cardEntity.getDepartment());
+            etPosition.setText(cardEntity.getPosition());
+            etMobile.setText(cardEntity.getPhone());
+            etEmail.setText(cardEntity.getEmail());
+            etAddress.setText(cardEntity.getAddress());
+        }
     }
 
     @Override
@@ -299,7 +329,7 @@ public class EditActivity extends MvpActivity<EditPresenter, EditModel> implemen
                             ToastUtils.toastShort("文件不存在");
                             return;
                         }
-                        mPresenter.uploadLogo(file);
+                        mPresenter.uploadCardFile(file);
                     }
                     break;
             }

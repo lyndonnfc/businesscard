@@ -18,6 +18,11 @@ public class EditModel implements EditContract.EditModel {
     }
 
     @Override
+    public void uploadCardFile(File file, StringCallback callback) {
+        HttpManager.getInstance().uploadCardFile(file, callback);
+    }
+
+    @Override
     public void createCard(long uid, boolean isSelf, String logo, String realName, String phone, String position,
                            String department, String companyName, String email, String address,
                            StringCallback callback) {

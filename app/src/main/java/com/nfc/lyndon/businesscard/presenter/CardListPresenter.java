@@ -85,7 +85,6 @@ public class CardListPresenter extends CardListContract.CardListPresenter {
 
     @Override
     public void requestCardList(long uid, String keyword) {
-        final CardListContract.CardListView mView = getView();
 
         mModel.requestCardList(uid, keyword, new StringCallback() {
             @Override
@@ -126,27 +125,34 @@ public class CardListPresenter extends CardListContract.CardListPresenter {
 
     @Override
     public void uploadCardFile(File file) {
-        final CardListContract.CardListView mView = getView();
         mModel.uploadCardFile(file, new StringCallback() {
             @Override
             public void onSuccess(Response<String> response) {
+                CardEntity cardEntity = new CardEntity();
                 BaseResponse<CardDetailEntity> baseResponse = JSON.parseObject(response.body(),
                         new TypeReference<BaseResponse<CardDetailEntity>>() {
                         });
-                if (baseResponse != null && baseResponse.getStat() == Constants.SUCCESS) {
-                    if (baseResponse.getResult() != null &&
-                            baseResponse.getResult().getNfcBusinessCardInfo() != null) {
-                        message = new Message();
-                        message.what = HANDLER_GET_RESULT_SUCCESS;
-                        message.obj = baseResponse.getResult().getNfcBusinessCardInfo();
-                        mHandler.sendMessage(message);
-                    }
+                if (cardEntity.noResult(response.body())) {
+                    message = new Message();
+                    message.what = HANDLER_FAILED;
+                    message.obj = "识别没结果";
+                    mHandler.sendMessage(message);
                 } else {
-                    if (baseResponse != null) {
-                        message = new Message();
-                        message.what = HANDLER_FAILED;
-                        message.obj = baseResponse.getMsg();
-                        mHandler.sendMessage(message);
+                    if (baseResponse != null && baseResponse.getStat() == Constants.SUCCESS) {
+                        if (baseResponse.getResult() != null &&
+                                baseResponse.getResult().getNfcBusinessCardInfo() != null) {
+                            message = new Message();
+                            message.what = HANDLER_GET_RESULT_SUCCESS;
+                            message.obj = baseResponse.getResult().getNfcBusinessCardInfo();
+                            mHandler.sendMessage(message);
+                        }
+                    } else {
+                        if (baseResponse != null) {
+                            message = new Message();
+                            message.what = HANDLER_FAILED;
+                            message.obj = baseResponse.getMsg();
+                            mHandler.sendMessage(message);
+                        }
                     }
                 }
             }

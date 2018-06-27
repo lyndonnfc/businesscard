@@ -2,6 +2,8 @@ package com.nfc.lyndon.businesscard.presenter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.JsonReader;
@@ -18,9 +20,12 @@ import com.lzy.okgo.request.base.Request;
 import com.nfc.lyndon.businesscard.R;
 import com.nfc.lyndon.businesscard.app.Constants;
 import com.nfc.lyndon.businesscard.base.BaseResponse;
+import com.nfc.lyndon.businesscard.contract.CardListContract;
 import com.nfc.lyndon.businesscard.contract.EditContract;
+import com.nfc.lyndon.businesscard.entity.CardDetailEntity;
 import com.nfc.lyndon.businesscard.entity.CardEntity;
 import com.nfc.lyndon.businesscard.entity.UploadEntity;
+import com.nfc.lyndon.businesscard.ui.activity.EditActivity;
 import com.nfc.lyndon.businesscard.util.ToastUtils;
 import com.nfc.lyndon.businesscard.util.WeakHandler;
 
@@ -35,6 +40,8 @@ public class EditPresenter extends EditContract.EditPresenter {
     private static final int HANDLER_UPDATE_SUCCESS = 3;
 
     private static final int HANDLER_FAILED = 4;
+
+    private static final int HANDLER_GET_RESULT_SUCCESS = 5;
 
     private Context mContext;
 
@@ -54,7 +61,13 @@ public class EditPresenter extends EditContract.EditPresenter {
                     ((Activity) mContext).finish();
                     break;
                 case HANDLER_FAILED:
+                    getView().hidLoading();
                     ToastUtils.toastShort((String) msg.obj);
+                    break;
+                case HANDLER_GET_RESULT_SUCCESS:
+                    getView().hidLoading();
+                    CardEntity cardEntity = (CardEntity) message.obj;
+                    getView().showData(cardEntity);
                     break;
             }
             return false;
@@ -199,13 +212,14 @@ public class EditPresenter extends EditContract.EditPresenter {
 
     /**
      * 数据是否改变
-     * @param realName 姓名
-     * @param mobile 手机
-     * @param position 职位
+     *
+     * @param realName   姓名
+     * @param mobile     手机
+     * @param position   职位
      * @param department 部门
-     * @param company 公司
-     * @param email 邮箱
-     * @param address 地址
+     * @param company    公司
+     * @param email      邮箱
+     * @param address    地址
      * @param cardEntity 原名片
      * @return
      */
@@ -222,5 +236,57 @@ public class EditPresenter extends EditContract.EditPresenter {
                 && company.equals(cardEntity.getCompanyName())
                 && email.equals(cardEntity.getEmail())
                 && address.equals(cardEntity.getAddress()));
+    }
+
+    @Override
+    public void uploadCardFile(File file) {
+        final EditContract.EditView mView = getView();
+        mModel.uploadCardFile(file, new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                CardEntity cardEntity = new CardEntity();
+                BaseResponse<CardDetailEntity> baseResponse = JSON.parseObject(response.body(),
+                        new TypeReference<BaseResponse<CardDetailEntity>>() {
+                        });
+                if (cardEntity.noResult(response.body())) {
+                    message = new Message();
+                    message.what = HANDLER_FAILED;
+                    message.obj = "识别没结果";
+                    mHandler.sendMessage(message);
+                } else {
+                    if (baseResponse != null && baseResponse.getStat() == Constants.SUCCESS) {
+                        if (baseResponse.getResult() != null &&
+                                baseResponse.getResult().getNfcBusinessCardInfo() != null) {
+                            message = new Message();
+                            message.what = HANDLER_GET_RESULT_SUCCESS;
+                            message.obj = baseResponse.getResult().getNfcBusinessCardInfo();
+                            mHandler.sendMessage(message);
+                        }
+                    } else {
+                        if (baseResponse != null) {
+                            message = new Message();
+                            message.what = HANDLER_FAILED;
+                            message.obj = baseResponse.getMsg();
+                            mHandler.sendMessage(message);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onError(Response<String> response) {
+                super.onError(response);
+                message = new Message();
+                message.what = HANDLER_FAILED;
+                message.obj = response.getException().getMessage();
+                mHandler.sendMessage(message);
+            }
+
+            @Override
+            public void onStart(Request<String, ? extends Request> request) {
+                super.onStart(request);
+                mView.showLoading("正在识别...");
+            }
+        });
     }
 }

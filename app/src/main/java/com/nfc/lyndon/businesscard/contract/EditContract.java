@@ -4,6 +4,7 @@ import com.lzy.okgo.callback.StringCallback;
 import com.nfc.lyndon.businesscard.base.BaseModel;
 import com.nfc.lyndon.businesscard.base.BasePresenter;
 import com.nfc.lyndon.businesscard.base.BaseView;
+import com.nfc.lyndon.businesscard.entity.CardEntity;
 
 import java.io.File;
 
@@ -17,11 +18,14 @@ public interface EditContract {
         void showLogo(String imgUrl);
         void showLoading(String message);
         void hidLoading();
+        void showData(CardEntity cardEntity);
     }
 
     interface EditModel extends BaseModel {
 
         void uploadLogo(File file, StringCallback callback);
+
+        void uploadCardFile(File file, StringCallback callback);
 
         void createCard(long uid, boolean isSelf, String logo, String realName, String phone, String position, String department,
                         String companyName, String email, String address, StringCallback callback);
@@ -32,6 +36,8 @@ public interface EditContract {
     abstract class EditPresenter extends BasePresenter<EditModel, EditView> {
 
         public abstract void uploadLogo(File file);
+
+        public abstract void uploadCardFile(File file);
 
         public abstract void createCard(long uid, boolean isSelf, String logo, String realName, String phone, String position,
                                         String department, String companyName, String email, String address);
