@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NFC名片</string>
+    <string name="app_name">NFC名片王</string>
     <string name="image_nfc">nfc</string>
     <string name="this_is_your_card">这是你的电子名片</string>
     <string name="hint_search">姓名/手机号/公司名称</string>
